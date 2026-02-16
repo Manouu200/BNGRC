@@ -6,6 +6,7 @@ use flight\Engine;
 use app\models\DonModel;
 use app\models\SinistreModel;
 use app\models\AchatModel;
+use app\models\VilleModel;
 
 class AchatController
 {
@@ -13,12 +14,14 @@ class AchatController
     protected DonModel $donModel;
     protected SinistreModel $sinistreModel;
     protected AchatModel $achatModel;
+    protected VilleModel $villeModel;
     public function __construct($app)
     {
         $this->app = $app;
         $this->donModel = new DonModel($this->app->db());
         $this->sinistreModel = new SinistreModel($this->app->db());
         $this->achatModel = new AchatModel($this->app->db());
+        $this->villeModel = new VilleModel($this->app->db());
     }
 
     public function showAchat(): void
@@ -28,6 +31,17 @@ class AchatController
         }
 
         $total = $this->donModel->getTotalArgent();
+
+        // Récupère la liste des villes pour le filtre
+        $villes = [];
+        try {
+            $villes = $this->villeModel->get();
+        } catch (\Throwable $e) {
+            // ignore
+        }
+
+        // Récupère le filtre ville depuis GET
+        $filtreVille = isset($_GET['ville']) ? (int)$_GET['ville'] : 0;
 
         // Récupère les sinistres et filtre ceux dont le besoin est différent de 'Argent'
         $sinistres = [];
@@ -67,11 +81,31 @@ class AchatController
             }));
         }
 
+
+        // Pourcentage de frais appliqué aux achats (ex: 10 pour 10%)
+        $fraisPercent = 10;
+
+        // Filtrer par ville si un filtre est sélectionné
+        if ($filtreVille > 0) {
+            $sinistres = array_values(array_filter($sinistres, function ($s) use ($filtreVille) {
+                return isset($s['id_ville']) && (int)$s['id_ville'] === $filtreVille;
+            }));
+            $achatList = array_values(array_filter($achatList, function ($a) use ($filtreVille) {
+                return isset($a['id_ville']) && (int)$a['id_ville'] === $filtreVille;
+            }));
+        }
+
+
         $this->app->render('achat.php', [
             'totalArgent' => $total,
             'sinistresNonArgent' => $sinistres,
             'purchasedObjetIds' => $purchasedObjetIds,
             'achatList' => $achatList,
+
+            'fraisPercent' => $fraisPercent,
+
+            'villes' => $villes,
+            'filtreVille' => $filtreVille,
         ]);
     }
 
@@ -106,6 +140,12 @@ class AchatController
             $qtyNeeded = isset($sin['quantite']) ? (int)$sin['quantite'] : 0;
             $prix = isset($sin['prix_unitaire']) ? (float)$sin['prix_unitaire'] : 0.0;
 
+            // Vérifier si cet objet est déjà présent dans les dons (quantité > 0)
+            if ($id_objet > 0 && $this->donModel->existsByObjet($id_objet)) {
+                echo json_encode(['success' => false, 'message' => 'Impossible: cet objet existe déjà dans les dons reçus']);
+                return;
+            }
+
             if ($qtyNeeded <= 0) {
                 throw new \RuntimeException('Quantité indisponible');
             }
@@ -120,7 +160,9 @@ class AchatController
             }
 
             $totalArgent = (int)round($this->donModel->getTotalArgent());
-            $amountToSpend = (int)round($qtyNeeded * $prix);
+            // Inclure les frais en pourcentage
+            $fraisPercent = 10; // garder cohérent avec showAchat; remplacer par config si besoin
+            $amountToSpend = (int)round($qtyNeeded * $prix * (1 + ($fraisPercent / 100)));
 
             if ($totalArgent <= 0) {
                 throw new \RuntimeException('Pas de fonds disponibles');
@@ -172,7 +214,8 @@ class AchatController
             $this->achatModel->insert($id_objet, $achatDate);
 
             $etatSatisfaitId = $this->getEtatIdByName('satisfait') ?? 2;
-            $this->sinistreModel->updateQuantiteEtat($sinistreId, 0, $etatSatisfaitId);
+            // Mettre à jour toutes les sinistres liées à cet objet (quantité = 0, état = satisfait)
+            $this->sinistreModel->markAllByObjetAsSatisfied($id_objet, $etatSatisfaitId);
 
             $db->commit();
 
@@ -184,6 +227,7 @@ class AchatController
                 'total' => $newTotal,
                 'spent' => $amountToSpend,
                 'achat_date' => $achatDate,
+                'frais_percent' => $fraisPercent,
             ]);
             return;
         } catch (\Throwable $e) {

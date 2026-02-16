@@ -89,4 +89,27 @@ class SinistreModel
         $stmt->execute($params);
         return $stmt->rowCount() > 0;
     }
+
+    /**
+     * Met à jour toutes les sinistres associées à un objet : met la quantité à 0 et
+     * applique l'état fourni (ex: 'satisfait'). Retourne le nombre de lignes modifiées.
+     * @param int $id_objet
+     * @param int|null $id_etat
+     * @return int
+     */
+    public function markAllByObjetAsSatisfied(int $id_objet, ?int $id_etat = null): int
+    {
+        $fields = ['quantite = 0'];
+        $params = [];
+        if ($id_etat !== null) {
+            $fields[] = 'id_etat = ?';
+            $params[] = $id_etat;
+        }
+
+        $params[] = $id_objet;
+        $sql = 'UPDATE BNGRC_sinistre SET ' . implode(', ', $fields) . ' WHERE id_objet = ?';
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->rowCount();
+    }
 }

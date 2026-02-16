@@ -136,4 +136,17 @@ class DonModel
         }
         return (float)$row['total'];
     }
+
+    /**
+     * Retourne true si des dons existent déjà pour cet objet (quantite > 0).
+     * @param int $id_objet
+     * @return bool
+     */
+    public function existsByObjet(int $id_objet): bool
+    {
+        $sql = "SELECT 1 FROM BNGRC_dons WHERE id_objet = ? AND quantite > 0 LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$id_objet]);
+        return $stmt->fetch(PDO::FETCH_ASSOC) !== false;
+    }
 }
