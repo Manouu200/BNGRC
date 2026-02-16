@@ -47,6 +47,27 @@
 
                     <div class="card" style="max-width:1400px; width:95%; margin:1.5rem auto;">
                         <div class="card-body" style="padding:1.75rem;">
+                            <!-- Filtre par ville -->
+                            <div style="margin-bottom:1.5rem; padding:1rem; background:#f8f9fa; border-radius:8px; border:1px solid #e9ecef;">
+                                <form method="GET" action="<?php echo BASE_URL; ?>/achat" style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
+                                    <label for="ville-filter" style="font-weight:500; margin:0;">🏙️ Filtrer par ville :</label>
+                                    <select name="ville" id="ville-filter" class="form-select" style="min-width:200px; max-width:300px; padding:0.5rem; border-radius:4px; border:1px solid #ced4da;">
+                                        <option value="0">Toutes les villes</option>
+                                        <?php if (!empty($villes) && is_array($villes)): ?>
+                                            <?php foreach ($villes as $v): ?>
+                                                <option value="<?php echo htmlspecialchars($v['id']); ?>" <?php echo (isset($filtreVille) && (int)$filtreVille === (int)$v['id']) ? 'selected' : ''; ?>>
+                                                    <?php echo htmlspecialchars($v['nom']); ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </select>
+                                    <button type="submit" class="btn btn-primary">Filtrer</button>
+                                    <?php if (isset($filtreVille) && $filtreVille > 0): ?>
+                                        <a href="<?php echo BASE_URL; ?>/achat" class="btn btn-secondary">Réinitialiser</a>
+                                    <?php endif; ?>
+                                </form>
+                            </div>
+
                             <table style="width:100%; border:1px solid #d5dce5; border-collapse:separate; border-spacing:1.5rem;">
                                 <tr>
                                     <td colspan="2" style="text-align:center;">

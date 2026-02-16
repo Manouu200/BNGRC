@@ -6,6 +6,7 @@ use flight\Engine;
 use app\models\DonModel;
 use app\models\SinistreModel;
 use app\models\AchatModel;
+use app\models\VilleModel;
 
 class AchatController
 {
@@ -13,12 +14,14 @@ class AchatController
     protected DonModel $donModel;
     protected SinistreModel $sinistreModel;
     protected AchatModel $achatModel;
+    protected VilleModel $villeModel;
     public function __construct($app)
     {
         $this->app = $app;
         $this->donModel = new DonModel($this->app->db());
         $this->sinistreModel = new SinistreModel($this->app->db());
         $this->achatModel = new AchatModel($this->app->db());
+        $this->villeModel = new VilleModel($this->app->db());
     }
 
     public function showAchat(): void
@@ -28,6 +31,17 @@ class AchatController
         }
 
         $total = $this->donModel->getTotalArgent();
+
+        // Récupère la liste des villes pour le filtre
+        $villes = [];
+        try {
+            $villes = $this->villeModel->get();
+        } catch (\Throwable $e) {
+            // ignore
+        }
+
+        // Récupère le filtre ville depuis GET
+        $filtreVille = isset($_GET['ville']) ? (int)$_GET['ville'] : 0;
 
         // Récupère les sinistres et filtre ceux dont le besoin est différent de 'Argent'
         $sinistres = [];
@@ -67,15 +81,31 @@ class AchatController
             }));
         }
 
+
         // Pourcentage de frais appliqué aux achats (ex: 10 pour 10%)
         $fraisPercent = 10;
+
+        // Filtrer par ville si un filtre est sélectionné
+        if ($filtreVille > 0) {
+            $sinistres = array_values(array_filter($sinistres, function ($s) use ($filtreVille) {
+                return isset($s['id_ville']) && (int)$s['id_ville'] === $filtreVille;
+            }));
+            $achatList = array_values(array_filter($achatList, function ($a) use ($filtreVille) {
+                return isset($a['id_ville']) && (int)$a['id_ville'] === $filtreVille;
+            }));
+        }
+
 
         $this->app->render('achat.php', [
             'totalArgent' => $total,
             'sinistresNonArgent' => $sinistres,
             'purchasedObjetIds' => $purchasedObjetIds,
             'achatList' => $achatList,
+
             'fraisPercent' => $fraisPercent,
+
+            'villes' => $villes,
+            'filtreVille' => $filtreVille,
         ]);
     }
 
