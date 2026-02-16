@@ -140,6 +140,12 @@ class AchatController
             $qtyNeeded = isset($sin['quantite']) ? (int)$sin['quantite'] : 0;
             $prix = isset($sin['prix_unitaire']) ? (float)$sin['prix_unitaire'] : 0.0;
 
+            // Vérifier si cet objet est déjà présent dans les dons (quantité > 0)
+            if ($id_objet > 0 && $this->donModel->existsByObjet($id_objet)) {
+                echo json_encode(['success' => false, 'message' => 'Impossible: cet objet existe déjà dans les dons reçus']);
+                return;
+            }
+
             if ($qtyNeeded <= 0) {
                 throw new \RuntimeException('Quantité indisponible');
             }
