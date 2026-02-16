@@ -12,6 +12,7 @@
     <!-- Stylesheets (same stack as home) -->
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/theme.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/layout.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/sidebar.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/forms.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/buttons.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/dons.css">
@@ -24,10 +25,6 @@
         <div class="main-content">
             <div class="page-wrapper">
                 <div class="dons-page">
-                    <div class="page-header">
-                        <h1 class="page-title">🤲 Enregistrement d'un don</h1>
-                        <p class="page-subtitle">Remplissez le formulaire ci-dessous pour enregistrer un don</p>
-                    </div>
 
                     <?php if (isset($_GET['created'])): ?>
                         <?php if ($_GET['created'] == '1'): ?>
@@ -84,13 +81,9 @@
                         <?php endif; ?>
                     <?php endif; ?>
 
-                    <div class="form-section-dons">
-                        <h2 class="form-title">🧾 Détails du Don</h2>
-                        <p style="color: #666; margin-bottom: 2rem; font-size: 0.95rem;">Veuillez remplir les informations ci-dessous pour enregistrer un nouveau don. Faites correspondre le don avec les besoins existants.</p>
-
                         <form method="post" action="<?php echo BASE_URL; ?>/dons/create" class="form-container">
                             <!-- Section 1: Classification du Don -->
-                            <div style="background: #e8f5e9; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; border-left: 4px solid #28a745;">
+                            <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; border-left: 4px solid #007bff;">
                                 <h3 style="margin-top: 0; color: #333; font-size: 1.1rem; margin-bottom: 1rem;">📦 Identification du Don</h3>
                                 <div class="form-grid">
                                     <div class="form-group-wrapper">
@@ -98,7 +91,7 @@
                                         <small style="display: block; color: #666; margin-bottom: 0.5rem;">Catégorie: Nature, Matériaux, ou Argent</small>
                                         <?php if (!empty($besoins) && is_array($besoins)): ?>
                                             <select name="type_besoin" id="type-besoin-select" class="form-select">
-                                                <option value="">-- Sélectionner un type --</option>
+                                                <option value="">Sélectionner un type</option>
                                                 <?php foreach ($besoins as $b): ?>
                                                     <option value="<?php echo htmlspecialchars($b['id'], ENT_QUOTES); ?>"><?php echo htmlspecialchars($b['nom']); ?></option>
                                                 <?php endforeach; ?>
@@ -113,10 +106,10 @@
                                         <small style="display: block; color: #666; margin-bottom: 0.5rem;">Spécifier l'article exact du don</small>
                                         <?php if (!empty($objets) && is_array($objets)): ?>
                                             <select name="objet" id="objet-select" class="form-select">
-                                                <option value="">-- Sélectionner un objet --</option>
+                                                <option value="">Sélectionner un objet</option>
                                                 <?php foreach ($objets as $o): ?>
                                                     <option value="<?php echo htmlspecialchars($o['id'] ?? '', ENT_QUOTES); ?>" data-besoin="<?php echo htmlspecialchars($o['id_besoins'] ?? '', ENT_QUOTES); ?>" data-unite="<?php echo htmlspecialchars($o['id_unite'] ?? '', ENT_QUOTES); ?>" data-prix="<?php echo htmlspecialchars($o['prix_unitaire'] ?? '', ENT_QUOTES); ?>">
-                                                        <?php echo htmlspecialchars($o['libellee'] ?? ''); ?> — <?php echo htmlspecialchars($o['besoin'] ?? ''); ?> (<?php echo htmlspecialchars($o['unite'] ?? ''); ?>)
+                                                        <?php echo htmlspecialchars($o['libellee'] ?? ''); ?>
                                                     </option>
                                                 <?php endforeach; ?>
                                             </select>
@@ -128,14 +121,14 @@
                             </div>
 
                             <!-- Section 2: Localisation du Don -->
-                            <div style="background: #fff3cd; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; border-left: 4px solid #ffc107;">
+                            <div style="background: #fff8f0; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; border-left: 4px solid #fd7e14;">
                                 <h3 style="margin-top: 0; color: #333; font-size: 1.1rem; margin-bottom: 1rem;">📍 Destination du Don</h3>
                                 <div class="form-group-wrapper">
                                     <label class="form-label">Ville Destinataire</label>
                                     <small style="display: block; color: #666; margin-bottom: 0.5rem;">Vers quelle ville ce don sera-t-il envoyé?</small>
                                     <?php if (!empty($villes) && is_array($villes)): ?>
                                         <select name="ville" class="form-select">
-                                            <option value="">-- Sélectionner une ville --</option>
+                                            <option value="">Sélectionner une ville</option>
                                             <?php foreach ($villes as $v): ?>
                                                 <option value="<?php echo htmlspecialchars($v['id'], ENT_QUOTES); ?>"><?php echo htmlspecialchars($v['nom']); ?></option>
                                             <?php endforeach; ?>
@@ -147,7 +140,7 @@
                             </div>
 
                             <!-- Section 3: Quantité et Détails -->
-                            <div style="background: #e3f2fd; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; border-left: 4px solid #2196f3;">
+                            <div style="background: #f0f8ff; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; border-left: 4px solid #17a2b8;">
                                 <h3 style="margin-top: 0; color: #333; font-size: 1.1rem; margin-bottom: 1rem;">📊 Quantité et Détails</h3>
                                 <div class="form-grid">
                                     <div class="form-group-wrapper">
@@ -203,7 +196,6 @@
                             </div>
                         </form>
                     </div>
-                </div>
             </div>
 
             <script>

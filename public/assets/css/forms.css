@@ -1,15 +1,14 @@
 /* ============================================
-   FORM STYLES - Professional Design
+   FORM STYLES - Professional Glass Theme
    ============================================ */
 
 /* Form Container */
 .form-container {
-    background: rgba(255, 255, 255, 0.98);
-    backdrop-filter: blur(8px);
+    background: rgba(255, 255, 255, 0.95);
     border-radius: var(--radius-lg);
     padding: var(--spacing-2xl);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .form-group {
@@ -75,22 +74,22 @@
 textarea {
     width: 100%;
     padding: var(--spacing-md);
-    border: 1px solid #dcfce7;
+    border: 1px solid var(--gray-300);
     border-radius: var(--radius-md);
     font-size: var(--font-size-base);
     font-family: inherit;
-    color: var(--dark);
-    background-color: #ffffff;
-    transition: all var(--transition-fast);
+    color: var(--text-on-glass-light);
+    background-color: rgba(255, 255, 255, 0.9);
+    transition: all var(--transition-base);
 }
 
 .form-control:focus,
 .form-select:focus,
 textarea:focus {
     outline: none;
-    border-color: #16A34A;
-    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
-    background-color: #ffffff;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    background-color: rgba(255, 255, 255, 0.95);
 }
 
 .form-control:disabled,
@@ -114,7 +113,7 @@ textarea {
 /* Select Styling */
 .form-select {
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%232563eb' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%233B82F6' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right var(--spacing-md) center;
     padding-right: var(--spacing-2xl);

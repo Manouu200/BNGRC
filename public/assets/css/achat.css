@@ -1,19 +1,20 @@
 /* ============================================
-   ACHAT PAGE STYLES - Professional Design
+   ACHAT PAGE STYLES - Professional Glass Design
    ============================================ */
 
 .achat-page {
     animation: fadeIn var(--transition-base) ease-out;
+    padding: var(--spacing-lg);
 }
 
 /* Page Header */
 .page-header {
-    background: linear-gradient(135deg, #16A34A 0%, #14532D 100%);
+    background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
     color: var(--white);
-    padding: var(--spacing-2xl);
+    padding: var(--spacing-2xl) var(--spacing-xl);
     border-radius: var(--radius-lg);
     margin-bottom: var(--spacing-2xl);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
 }
 
 .page-title {
@@ -25,120 +26,196 @@
 
 .page-subtitle {
     margin: var(--spacing-sm) 0 0 0;
-    opacity: 0.95;
+    opacity: 0.9;
     font-size: var(--font-size-base);
 }
 
-/* Achat Total Card */
+/* Achat Total Card - Money Display */
+.achat-total-wrapper {
+    max-width: 600px;
+    margin: var(--spacing-xl) auto;
+}
+
 .achat-total-card {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(240, 253, 250, 0.98) 100%);
+    background: #ffffff;
     padding: var(--spacing-2xl);
     border-radius: var(--radius-lg);
-    border: 2px solid rgba(22, 163, 74, 0.3);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--gray-200);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     transition: all var(--transition-base);
+    text-align: center;
 }
 
 .achat-total-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 16px 60px rgba(22, 163, 74, 0.2);
-    border-color: rgba(22, 163, 74, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    border-color: var(--primary-color);
 }
 
 #achat-total-value {
-    background: linear-gradient(135deg, #16A34A 0%, #14532D 100%);
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     margin: 0;
-    font-size: 2.75rem;
+    font-size: 3rem;
     font-weight: var(--font-weight-bold);
+    letter-spacing: -1px;
+    line-height: 1.2;
 }
 
-/* Table Section */
-.table-section {
-    background: rgba(255, 255, 255, 0.98);
-    padding: var(--spacing-2xl);
-    border-radius: var(--radius-lg);
-    border: 1px solid rgba(22, 163, 74, 0.2);
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
-    margin-bottom: var(--spacing-2xl);
+#achat-total-value span {
+    font-size: 1.25rem;
+    opacity: 0.75;
 }
 
-.table-section h3 {
-    color: var(--dark);
-    font-size: var(--font-size-lg);
-    margin: 0 0 var(--spacing-lg) 0;
-    padding-bottom: var(--spacing-md);
-    border-bottom: 2px solid rgba(22, 163, 74, 0.3);
+.achat-total-card .achat-total-label {
+    margin-top: var(--spacing-md);
+    color: var(--gray-500);
+    font-size: var(--font-size-sm);
 }
 
-/* Table Wrapper Override for Achat */
-.table-section .table-wrapper {
-    background: rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(16, 185, 129, 0.15);
-    box-shadow: none;
-}
-
-.table-section table thead {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
-    border-bottom: 2px solid rgba(16, 185, 129, 0.3);
-}
-
-.table-section table thead th {
-    color: var(--dark);
-    font-weight: var(--font-weight-bold);
-    letter-spacing: 0.5px;
-}
-
-.table-section table tbody tr {
-    border-bottom: 1px solid rgba(16, 185, 129, 0.1);
-}
-
-.table-section table tbody tr:hover {
-    background-color: rgba(16, 185, 129, 0.05);
-}
-
-/* Buttons */
-.achat-btn {
-    background: linear-gradient(135deg, #16A34A 0%, #14532D 100%);
-    color: var(--white);
-    border: none;
-    font-weight: var(--font-weight-semibold);
-    transition: all var(--transition-fast);
-}
-
-.achat-btn:hover:not(:disabled) {
-    background: linear-gradient(135deg, #14532D 0%, #052E16 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(22, 163, 74, 0.4);
-}
-
-.achat-btn:disabled {
-    background: linear-gradient(135deg, #16A34A 0%, #14532D 100%);
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-/* Card Base */
+/* Cards */
 .card {
-    background: rgba(255, 255, 255, 0.98);
-    border: 1px solid rgba(22, 163, 74, 0.2);
+    background: #ffffff;
+    border: 1px solid var(--gray-200);
     border-radius: var(--radius-lg);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     transition: all var(--transition-base);
+    overflow: hidden;
+    max-width: 1100px;
+    margin: var(--spacing-xl) auto;
 }
 
 .card:hover {
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
 }
 
 .card-body {
     padding: var(--spacing-xl);
 }
 
+.card-body h3 {
+    margin: 0 0 var(--spacing-lg) 0;
+    font-size: var(--font-size-lg);
+    color: var(--dark);
+    font-weight: var(--font-weight-semibold);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 2px solid var(--primary-color);
+}
+
+/* Table Responsive */
+.table-responsive {
+    margin-top: var(--spacing-lg);
+    overflow-x: auto;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--gray-200);
+}
+
+/* Table Styling */
+.achat-page .table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    font-size: var(--font-size-sm);
+}
+
+.achat-page .table thead {
+    background: #f1f5f9;
+}
+
+.achat-page .table thead th {
+    padding: var(--spacing-md) var(--spacing-lg);
+    text-align: left;
+    font-weight: var(--font-weight-semibold);
+    color: var(--dark);
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--primary-color);
+    white-space: nowrap;
+}
+
+.achat-page .table tbody tr {
+    border-bottom: 1px solid var(--gray-100);
+    transition: all var(--transition-fast);
+}
+
+.achat-page .table tbody tr:hover {
+    background-color: #f1f5f9;
+}
+
+.achat-page .table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.achat-page .table tbody td {
+    padding: var(--spacing-md) var(--spacing-lg);
+    color: var(--gray-700);
+    vertical-align: middle;
+}
+
+/* Zebra Striping */
+.achat-page .table tbody tr:nth-child(even) {
+    background-color: rgba(248, 250, 252, 0.5);
+}
+
+.achat-page .table tbody tr:nth-child(even):hover {
+    background-color: #f1f5f9;
+}
+
+/* Achat Button */
+.achat-btn {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    color: var(--white);
+    border: none;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-md);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-xs);
+    transition: all var(--transition-base);
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.achat-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+}
+
+.achat-btn:disabled {
+    background: linear-gradient(135deg, #94A3B8 0%, #64748B 100%);
+    opacity: 0.8;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Price Column Highlight */
+.achat-page .table tbody td:nth-child(6) {
+    font-weight: var(--font-weight-semibold);
+    color: var(--success-color);
+}
+
+/* Status Badge Style for État column */
+.achat-page .table tbody td:nth-child(8) {
+    font-weight: var(--font-weight-medium);
+}
+
 /* Responsive */
+@media (max-width: 1024px) {
+    .card {
+        margin: var(--spacing-lg) var(--spacing-sm);
+        max-width: none;
+    }
+}
+
 @media (max-width: 768px) {
+    .achat-page {
+        padding: var(--spacing-md);
+    }
+
     .page-header {
         padding: var(--spacing-xl);
     }
@@ -152,11 +229,22 @@
     }
 
     #achat-total-value {
-        font-size: 2rem;
+        font-size: 2.25rem;
     }
 
-    .table-section {
+    .card-body {
         padding: var(--spacing-lg);
+    }
+
+    .achat-page .table thead th,
+    .achat-page .table tbody td {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: var(--font-size-xs);
+    }
+
+    .achat-btn {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        font-size: 0.7rem;
     }
 }
 

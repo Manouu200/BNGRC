@@ -13,7 +13,7 @@
     align-items: center;
     margin-bottom: var(--spacing-2xl);
     padding-bottom: var(--spacing-lg);
-    border-bottom: 2px solid #16A34A;
+    border-bottom: 2px solid var(--accent-color);
 }
 
 .dashboard-title {
@@ -28,12 +28,12 @@
 
 /* Filters Section */
 .filters-bar {
-    background: rgba(255, 255, 255, 0.98);
+    background: rgba(255, 255, 255, 0.95);
     padding: var(--spacing-lg);
     border-radius: var(--radius-lg);
     margin-bottom: var(--spacing-xl);
-    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .filters-row {
@@ -57,21 +57,21 @@
 
 /* Data Table Section */
 .table-section {
-    background: rgba(255, 255, 255, 0.98);
+    background: rgba(255, 255, 255, 0.95);
     border-radius: var(--radius-lg);
-    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     overflow: hidden;
     animation: slideInUp var(--transition-base) ease-out;
 }
 
 .table-header {
     padding: var(--spacing-lg);
-    border-bottom: 1px solid #dcfce7;
+    border-bottom: 1px solid var(--gray-200);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(59, 130, 246, 0.03) 100%);
 }
 
 .table-header-title {

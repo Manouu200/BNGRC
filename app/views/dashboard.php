@@ -12,6 +12,7 @@
     <!-- Stylesheets -->
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/theme.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/layout.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/sidebar.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/forms.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/buttons.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/tables.css">

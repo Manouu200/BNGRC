@@ -12,6 +12,7 @@
     <!-- Stylesheets -->
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/theme.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/layout.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/sidebar.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/forms.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/buttons.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/home.css">
@@ -24,15 +25,9 @@
         <div class="main-content">
             <div class="page-wrapper">
                 <div class="home-page">
-                    <!-- Page Header -->
-                    <div class="page-header">
-                        <h1 class="page-title">📝 Enregistrement de Besoin</h1>
-                        <p class="page-subtitle">Remplissez le formulaire ci-dessous pour ajouter un nouveau besoin</p>
-                    </div>
+    
                     <!-- Form Section -->
                     <div class="form-section-home">
-                        <h2 class="form-title">💼 Détails du Besoin</h2>
-                        <p style="color: #666; margin-bottom: 2rem; font-size: 0.95rem;">Veuillez remplir les informations ci-dessous pour enregistrer un nouveau besoin. Les champs marqués avec <span style="color: #dc3545;">*</span> sont obligatoires.</p>
 
                         <form method="post" action="<?php echo BASE_URL; ?>/sinistre/create" class="form-container" style="padding: 0; box-shadow: none; border: none; background: transparent;">
                             <!-- Section 1: Classification -->
@@ -44,7 +39,7 @@
                                         <small style="display: block; color: #666; margin-bottom: 0.5rem;">Catégories disponibles: Nature, Matériaux, Argent</small>
                                         <?php if (!empty($besoins) && is_array($besoins)): ?>
                                             <select name="type_besoin" id="type-besoin-select" class="form-select" required>
-                                                <option value="">-- Sélectionner un type --</option>
+                                                <option value="">Sélectionner un type</option>
                                                 <?php foreach ($besoins as $b): ?>
                                                     <option value="<?php echo htmlspecialchars($b['id'], ENT_QUOTES); ?>">
                                                         <?php echo htmlspecialchars($b['nom']); ?>
@@ -61,10 +56,10 @@
                                         <small style="display: block; color: #666; margin-bottom: 0.5rem;">Sélectionnez l'article exact</small>
                                         <?php if (!empty($objets) && is_array($objets)): ?>
                                             <select name="objet" id="objet-select" class="form-select" required>
-                                                <option value="">-- Sélectionner un objet --</option>
+                                                <option value="">Sélectionner un objet</option>
                                                 <?php foreach ($objets as $o): ?>
                                                     <option value="<?php echo htmlspecialchars($o['id'] ?? '', ENT_QUOTES); ?>" data-besoin="<?php echo htmlspecialchars($o['id_besoins'] ?? '', ENT_QUOTES); ?>" data-unite="<?php echo htmlspecialchars($o['id_unite'] ?? '', ENT_QUOTES); ?>" data-prix="<?php echo htmlspecialchars($o['prix_unitaire'] ?? '', ENT_QUOTES); ?>">
-                                                        <?php echo htmlspecialchars($o['libellee'] ?? ''); ?> — <?php echo htmlspecialchars($o['besoin'] ?? ''); ?> (<?php echo htmlspecialchars($o['unite'] ?? ''); ?>)
+                                                        <?php echo htmlspecialchars($o['libellee'] ?? ''); ?>
                                                     </option>
                                                 <?php endforeach; ?>
                                             </select>
@@ -83,7 +78,7 @@
                                     <small style="display: block; color: #666; margin-bottom: 0.5rem;">Sélectionnez la ville où le besoin est identifié</small>
                                     <?php if (!empty($villes) && is_array($villes)): ?>
                                         <select name="ville" class="form-select" required>
-                                            <option value="">-- Sélectionner une ville --</option>
+                                            <option value="">Sélectionner une ville</option>
                                             <?php foreach ($villes as $v): ?>
                                                 <option value="<?php echo htmlspecialchars($v['id'], ENT_QUOTES); ?>">
                                                     <?php echo htmlspecialchars($v['nom']); ?>
@@ -156,24 +151,6 @@
                         </form>
                     </div>
 
-                    <!-- Info Cards -->
-                    <div class="stats-section">
-                        <div class="stat-card">
-                            <div class="stat-icon">📋</div>
-                            <div class="stat-value">Besoin</div>
-                            <div class="stat-label">Enregistrer un nouveau besoin</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">📊</div>
-                            <div class="stat-value">Vue</div>
-                            <div class="stat-label">Consulter le tableau de bord</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">🔍</div>
-                            <div class="stat-value">Filtre</div>
-                            <div class="stat-label">Rechercher par paramètres</div>
-                        </div>
-                    </div>
                 </div>
             </div>
 

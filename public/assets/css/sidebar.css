@@ -5,34 +5,24 @@
   height: 100vh;
   position: sticky;
   top: 0;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(10, 10, 15, 0.6);
-  backdrop-filter: blur(12px) saturate(200%);
-  box-shadow: 2px 0 30px rgba(0, 0, 0, 0.25);
+  border-right: 1px solid rgba(0, 0, 0, 0.05);
 }
 .sidebar-title {
   margin-top: 0;
   margin-bottom: 0.75rem;
   font-size: 1.125rem;
-  color: #ffffff;
+  color: #fff;
 }
 .sidebar .nav-link {
-  color: rgba(255, 255, 255, 0.75);
-  transition: all 0.3s ease;
-  border-left: 3px solid transparent;
-  margin: 0.25rem 0;
-}
-.sidebar .nav-link:hover {
-  background-color: rgba(245, 158, 11, 0.15);
-  color: #ffffff;
-  border-left-color: #F59E0B;
-  backdrop-filter: blur(8px);
+  color: #fff;
 }
 .sidebar .nav-link.active {
-  background-color: rgba(245, 158, 11, 0.2);
-  color: #FBBF24;
-  border-left-color: #F59E0B;
-  backdrop-filter: blur(8px);
+  background-color: transparent;
+  color: #fff;
+}
+.sidebar .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
 }
 .home-page h1 {
   margin-top: 0;
@@ -40,21 +30,18 @@
 
 /* Override sidebar text colors to white */
 .bg-dark {
-  color: #ffffff !important;
-  background: rgba(10, 10, 15, 0.6) !important;
-  backdrop-filter: blur(12px) saturate(200%) !important;
+  color: #fff !important;
 }
 .bg-dark .text-white {
-  color: #ffffff !important;
+  color: #fff !important;
 }
 .bg-dark .nav-link {
-  color: rgba(255, 255, 255, 0.75) !important;
+  color: #fff !important;
 }
 .bg-dark .dropdown-menu,
 .bg-dark .dropdown-item {
-  color: #1f2937 !important;
-  background-color: rgba(255, 255, 255, 0.9) !important;
-  backdrop-filter: blur(10px);
+  color: #000 !important;
+  /* background-color: #f8f9fa !important; */
 }
 
 /* Footer styles: fixed at bottom, centered */
@@ -64,11 +51,9 @@
   right: 0;
   bottom: 0;
   text-align: center;
-  padding: 0.75rem 1rem;
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px) saturate(180%);
-  border-top: 1px solid rgba(37, 99, 235, 0.1);
-  box-shadow: 0 -2px 15px rgba(31, 38, 135, 0.08);
+  padding: 0.5rem 1rem;
+  background: #ffffff;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
   z-index: 1050;
   font-size: 0.9rem;
   color: #333;
@@ -78,3 +63,4 @@
 body {
   padding-bottom: 3.5rem;
 }
+

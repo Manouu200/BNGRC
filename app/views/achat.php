@@ -11,6 +11,8 @@
     <link rel="icon" type="image/png" href="<?php echo BASE_URL; ?>/assets/images/BNGRC.png">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/theme.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/layout.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/sidebar.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/tables.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/achat.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/buttons.css">
     <style>
@@ -40,10 +42,6 @@
         <div class="main-content">
             <div class="page-wrapper">
                 <div class="achat-page">
-                    <div class="page-header">
-                        <h1 class="page-title">🛒 Achat</h1>
-                        <div style="width:100%; height:1px; background:linear-gradient(90deg, #0d6efd, #6cb2eb); margin-top:0.5rem;"></div>
-                    </div>
 
                     <div class="card" style="max-width:1400px; width:95%; margin:1.5rem auto;">
                         <div class="card-body" style="padding:1.75rem;">

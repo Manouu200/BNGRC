@@ -8,12 +8,12 @@
 
 /* Hero / Header (kept minimal for dons) */
 .dons-hero {
-  background: linear-gradient(135deg, #f97316 0%, #f59e0b 100%);
+  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
   color: var(--white);
   padding: var(--spacing-2xl);
   border-radius: var(--radius-lg);
   margin-bottom: var(--spacing-2xl);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 12px 40px rgba(59, 130, 246, 0.3);
 }
 
 .dons-hero h1 {
@@ -23,11 +23,11 @@
 /* Form Section uses same look as home */
 .form-section-dons,
 .form-section-home {
-  background: rgba(255, 255, 255, 0.98);
+  background: rgba(255, 255, 255, 0.95);
   padding: var(--spacing-2xl);
   border-radius: var(--radius-lg);
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   margin-bottom: var(--spacing-2xl);
 }
 
@@ -36,7 +36,7 @@
   color: var(--dark);
   margin-bottom: var(--spacing-lg);
   padding-bottom: var(--spacing-md);
-  border-bottom: 2px solid #16A34A;
+  border-bottom: 2px solid var(--primary-color);
 }
 
 .form-grid {
