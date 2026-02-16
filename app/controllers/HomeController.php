@@ -43,7 +43,45 @@ class HomeController
         $unites = $this->uniteModel->get();
         $objets = $this->objetModel->getAll();
 
-        $this->app->render('home.php', ['username' => $username, 'userObjects' => $userObjects, 'besoins' => $besoins, 'villes' => $villes, 'unites' => $unites, 'objets' => $objets]);
+        // Récupère les unités associées à chaque besoin
+        $unitesByBesoin = $this->getUnitesByBesoin();
+
+        $this->app->render('home.php', [
+            'username' => $username, 
+            'userObjects' => $userObjects, 
+            'besoins' => $besoins, 
+            'villes' => $villes, 
+            'unites' => $unites, 
+            'objets' => $objets,
+            'unitesByBesoin' => $unitesByBesoin
+        ]);
+    }
+
+    private function getUnitesByBesoin()
+    {
+        $query = '
+            SELECT DISTINCT b.id AS besoin_id, u.id AS unite_id
+            FROM BNGRC_besoins b
+            LEFT JOIN BNGRC_objet o ON b.id = o.id_besoins
+            LEFT JOIN BNGRC_unite u ON o.id_unite = u.id
+            WHERE u.id IS NOT NULL
+            ORDER BY b.id, u.id
+        ';
+        
+        $stmt = $this->app->db()->query($query);
+        $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        $unitesByBesoin = [];
+        foreach ($results as $row) {
+            $besoinId = $row['besoin_id'];
+            $uniteId = $row['unite_id'];
+            if (!isset($unitesByBesoin[$besoinId])) {
+                $unitesByBesoin[$besoinId] = [];
+            }
+            $unitesByBesoin[$besoinId][] = $uniteId;
+        }
+        
+        return $unitesByBesoin;
     }
 
     public function createSinistre()

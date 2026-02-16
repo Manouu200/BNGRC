@@ -213,12 +213,40 @@ class DonsController
             'villes' => $this->villeModel->get(),
             'unites' => $this->uniteModel->get(),
             'objets' => $this->objetModel->getAll(),
+            'unitesByBesoin' => $this->getUnitesByBesoin(),
             'dispatchResults' => [],
             'dispatchStatus' => null,
             'dispatchError' => null,
         ];
 
         $this->app->render('dons.php', array_merge($data, $extra));
+    }
+
+    private function getUnitesByBesoin()
+    {
+        $query = '
+            SELECT DISTINCT b.id AS besoin_id, u.id AS unite_id
+            FROM BNGRC_besoins b
+            LEFT JOIN BNGRC_objet o ON b.id = o.id_besoins
+            LEFT JOIN BNGRC_unite u ON o.id_unite = u.id
+            WHERE u.id IS NOT NULL
+            ORDER BY b.id, u.id
+        ';
+        
+        $stmt = $this->app->db()->query($query);
+        $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        $unitesByBesoin = [];
+        foreach ($results as $row) {
+            $besoinId = $row['besoin_id'];
+            $uniteId = $row['unite_id'];
+            if (!isset($unitesByBesoin[$besoinId])) {
+                $unitesByBesoin[$besoinId] = [];
+            }
+            $unitesByBesoin[$besoinId][] = $uniteId;
+        }
+        
+        return $unitesByBesoin;
     }
 
     protected function getEtatIdByName(string $name): ?int
