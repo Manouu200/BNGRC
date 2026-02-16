@@ -185,11 +185,21 @@
                         if (uniteId && uniteSelect) {
                             uniteSelect.value = uniteId;
                         }
-                        if (prixDisplay) {
-                            prixDisplay.value = formatPrix(prix);
+                        // If the selected besoin is 'Argent', do not show a unit price
+                        var selectedBesoinText = '';
+                        if (besoinSelect && besoinSelect.options[besoinSelect.selectedIndex]) {
+                            selectedBesoinText = (besoinSelect.options[besoinSelect.selectedIndex].text || '').trim().toLowerCase();
                         }
-                        if (prixHidden) {
-                            prixHidden.value = prix || '';
+                        if (selectedBesoinText === 'argent') {
+                            if (prixDisplay) prixDisplay.value = '';
+                            if (prixHidden) prixHidden.value = '';
+                        } else {
+                            if (prixDisplay) {
+                                prixDisplay.value = formatPrix(prix);
+                            }
+                            if (prixHidden) {
+                                prixHidden.value = prix || '';
+                            }
                         }
                     }
 

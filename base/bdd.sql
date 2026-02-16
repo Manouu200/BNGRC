@@ -81,7 +81,7 @@ INSERT INTO BNGRC_objet (id_besoins, libellee, id_unite, prix_unitaire) VALUES
     (2, 'Kit de premiers secours', 4, 10000.00),
     (2, 'Couvertures isothermes', 4, 8000.00),
     (2, 'Lampes solaires', 4, 45000.00),
-    (3, 'Fonds d urgence', 3, 100000.00);
+    (3, 'Fonds d urgence', 3, NULL);
 
 -- Valeurs par défaut pour `etat`
 INSERT INTO BNGRC_etat (nom) VALUES
