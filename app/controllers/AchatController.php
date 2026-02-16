@@ -208,7 +208,8 @@ class AchatController
             $this->achatModel->insert($id_objet, $achatDate);
 
             $etatSatisfaitId = $this->getEtatIdByName('satisfait') ?? 2;
-            $this->sinistreModel->updateQuantiteEtat($sinistreId, 0, $etatSatisfaitId);
+            // Mettre à jour toutes les sinistres liées à cet objet (quantité = 0, état = satisfait)
+            $this->sinistreModel->markAllByObjetAsSatisfied($id_objet, $etatSatisfaitId);
 
             $db->commit();
 
