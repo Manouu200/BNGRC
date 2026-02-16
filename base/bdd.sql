@@ -44,8 +44,15 @@ INSERT INTO ville (nom) VALUES
     ('Majunga'),
     ('Tamatave');
 
--- Quelques sinistres exemples (libellés courts et réalistes)
-INSERT INTO sinistre (id_besoins, libellee, id_ville, quantite, id_unite) VALUES
-    (1, 'huile', 1, 1, 1),
-    (2, 'clous', 2, 50, 4),
-    (3, 'aide financière urgence', 3, 500000, 3);
+-- Vue présentant les sinistres sans exposer les identifiants
+CREATE VIEW IF NOT EXISTS vue_sinistre AS
+SELECT
+    v.nom AS ville,
+    b.nom AS besoin,
+    s.libellee AS libellee,
+    s.quantite AS quantite,
+    u.nom AS unite
+FROM sinistre s
+JOIN ville v ON s.id_ville = v.id
+JOIN besoins b ON s.id_besoins = b.id
+JOIN unite u ON s.id_unite = u.id;

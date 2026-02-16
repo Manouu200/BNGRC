@@ -23,3 +23,8 @@ $router->post('/sinistre/create', function () use ($app) {
     $controller = new HomeController($app);
     $controller->createSinistre();
 });
+
+$router->get('/dashboard', function () use ($app) {
+    $controller = new \app\controllers\DashboardController($app);
+    $controller->showDashboard();
+});

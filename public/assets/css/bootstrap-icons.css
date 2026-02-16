@@ -26,3 +26,10 @@
   background-position: center;
   background-size: 1em 1em;
 }
+
+.bi-speedometer2 {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='currentColor' d='M8 3a5 5 0 1 0 0 10A5 5 0 0 0 8 3zm0-1a6 6 0 1 1 0 12A6 6 0 0 1 8 2z'/><path fill='currentColor' d='M8.5 8.5L11 6l-1-1.5L7 7l1.5 1.5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 1em 1em;
+}
