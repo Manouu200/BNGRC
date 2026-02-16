@@ -28,3 +28,13 @@ $router->get('/dashboard', function () use ($app) {
     $controller = new \app\controllers\DashboardController($app);
     $controller->showDashboard();
 });
+
+$router->get('/dons', function () use ($app) {
+    $controller = new \app\controllers\DonsController($app);
+    $controller->showForm();
+});
+
+$router->post('/dons/create', function () use ($app) {
+    $controller = new \app\controllers\DonsController($app);
+    $controller->createDon();
+});

@@ -3,6 +3,7 @@
 ?>
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,10 +16,11 @@
     <link rel="stylesheet" href="/assets/css/tables.css">
     <link rel="stylesheet" href="/assets/css/dashboard.css">
 </head>
+
 <body>
     <div class="container-main">
         <?php include __DIR__ . '/templates/sidebar.php'; ?>
-        
+
         <div class="main-content">
             <div class="page-wrapper">
                 <div class="dashboard-page">
@@ -45,36 +47,36 @@
                             <div class="stat-item-value"><?php echo !empty($sinistres) ? count($sinistres) : '0'; ?></div>
                             <div class="stat-item-change">↑ Actualisé</div>
                         </div>
-                        
+
                         <div class="stat-item">
                             <div class="stat-item-header">
                                 <div class="stat-item-title">Villes Touchées</div>
                                 <div class="stat-item-icon">🗺️</div>
                             </div>
-                            <div class="stat-item-value"><?php 
-                                $villes_count = 0;
-                                if (!empty($sinistres)) {
-                                    $villes_uniques = array_unique(array_column($sinistres, 'ville'));
-                                    $villes_count = count($villes_uniques);
-                                }
-                                echo $villes_count;
-                            ?></div>
+                            <div class="stat-item-value"><?php
+                                                            $villes_count = 0;
+                                                            if (!empty($sinistres)) {
+                                                                $villes_uniques = array_unique(array_column($sinistres, 'ville'));
+                                                                $villes_count = count($villes_uniques);
+                                                            }
+                                                            echo $villes_count;
+                                                            ?></div>
                             <div class="stat-item-change">Zones affectées</div>
                         </div>
-                        
+
                         <div class="stat-item">
                             <div class="stat-item-header">
                                 <div class="stat-item-title">Types de Besoins</div>
                                 <div class="stat-item-icon">🏷️</div>
                             </div>
-                            <div class="stat-item-value"><?php 
-                                $types_count = 0;
-                                if (!empty($sinistres)) {
-                                    $types_uniques = array_unique(array_column($sinistres, 'besoin'));
-                                    $types_count = count($types_uniques);
-                                }
-                                echo $types_count;
-                            ?></div>
+                            <div class="stat-item-value"><?php
+                                                            $types_count = 0;
+                                                            if (!empty($sinistres)) {
+                                                                $types_uniques = array_unique(array_column($sinistres, 'besoin'));
+                                                                $types_count = count($types_uniques);
+                                                            }
+                                                            echo $types_count;
+                                                            ?></div>
                             <div class="stat-item-change">Catégories</div>
                         </div>
                     </div>
@@ -104,6 +106,76 @@
                                 </button>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- Donations Table Section -->
+                    <div class="table-section">
+                        <div class="table-header">
+                            <div class="table-header-title">Listes des dons</div>
+                            <div class="table-header-info">
+                                <div class="table-count">
+                                    <span>Total:</span>
+                                    <span class="table-count-badge"><?php echo !empty($dons) ? count($dons) : '0'; ?></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-container">
+                            <?php if (!empty($dons) && is_array($dons)): ?>
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>📍 Ville</th>
+                                            <th>📋 Type de Besoin</th>
+                                            <th>📝 Libellé</th>
+                                            <th style="text-align: center;">📊 Quantité</th>
+                                            <th>📏 Unité</th>
+                                            <th>📅 Date</th>
+                                            <th style="text-align: center;">⚙️ Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($dons as $d): ?>
+                                            <tr>
+                                                <td>
+                                                    <strong><?php echo htmlspecialchars($d['ville'] ?? 'N/A'); ?></strong>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-success">
+                                                        <?php echo htmlspecialchars($d['besoin'] ?? 'N/A'); ?>
+                                                    </span>
+                                                </td>
+                                                <td><?php echo htmlspecialchars($d['libellee'] ?? ''); ?></td>
+                                                <td style="text-align: center;">
+                                                    <strong><?php echo htmlspecialchars((string)($d['quantite'] ?? '')); ?></strong>
+                                                </td>
+                                                <td><?php echo htmlspecialchars($d['unite'] ?? ''); ?></td>
+                                                <td><?php echo htmlspecialchars($d['date'] ?? ''); ?></td>
+                                                <td style="text-align: center;">
+                                                    <div class="table-actions">
+                                                        <button class="btn btn-sm btn-outline-primary" title="Voir">👁️</button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            <?php else: ?>
+                                <div class="empty-state">
+                                    <div class="empty-state-icon">📭</div>
+                                    <div class="empty-state-title">Aucun don enregistré</div>
+                                    <div class="empty-state-message">Commencez par <a href="<?php echo BASE_URL; ?>/dons">ajouter un don</a></div>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+
+                        <?php if (!empty($dons)): ?>
+                            <div class="table-footer">
+                                <div class="table-footer-info">
+                                    Affichage de <strong><?php echo count($dons); ?></strong> don(s)
+                                </div>
+                            </div>
+                        <?php endif; ?>
                     </div>
 
                     <!-- Data Table Section -->
@@ -180,9 +252,10 @@
                     </div>
                 </div>
             </div>
-            
+
             <?php include __DIR__ . '/templates/footer.php'; ?>
         </div>
     </div>
 </body>
+
 </html>
