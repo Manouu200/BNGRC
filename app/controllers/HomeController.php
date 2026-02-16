@@ -7,6 +7,7 @@ use app\models\BesoinModel;
 use app\models\VilleModel;
 use app\models\UniteModel;
 use app\models\SinistreModel;
+use app\models\ObjetModel;
 
 class HomeController
 {
@@ -15,6 +16,7 @@ class HomeController
     protected VilleModel $villeModel;
     protected UniteModel $uniteModel;
     protected SinistreModel $sinistreModel;
+    protected ObjetModel $objetModel;
 
     public function __construct($app)
     {
@@ -23,6 +25,7 @@ class HomeController
         $this->villeModel = new VilleModel($this->app->db());
         $this->uniteModel = new UniteModel($this->app->db());
         $this->sinistreModel = new SinistreModel($this->app->db());
+        $this->objetModel = new ObjetModel($this->app->db());
     }
 
     public function showHome()
@@ -38,8 +41,9 @@ class HomeController
         $besoins = $this->besoinModel->get();
         $villes = $this->villeModel->get();
         $unites = $this->uniteModel->get();
+        $objets = $this->objetModel->getAll();
 
-        $this->app->render('home.php', ['username' => $username, 'userObjects' => $userObjects, 'besoins' => $besoins, 'villes' => $villes, 'unites' => $unites]);
+        $this->app->render('home.php', ['username' => $username, 'userObjects' => $userObjects, 'besoins' => $besoins, 'villes' => $villes, 'unites' => $unites, 'objets' => $objets]);
     }
 
     public function createSinistre()
@@ -49,11 +53,9 @@ class HomeController
             return;
         }
 
-        $id_besoin = isset($_POST['type_besoin']) ? (int)$_POST['type_besoin'] : 0;
-        $libellee = isset($_POST['libellee']) ? trim((string)$_POST['libellee']) : '';
+        $id_objet = isset($_POST['objet']) ? (int)$_POST['objet'] : 0;
         $id_ville = isset($_POST['ville']) ? (int)$_POST['ville'] : 0;
         $quantite = isset($_POST['quantite']) ? (int)$_POST['quantite'] : 0;
-        $id_unite = isset($_POST['unite']) ? (int)$_POST['unite'] : 0;
         $dateRaw = isset($_POST['date']) ? trim((string)$_POST['date']) : '';
 
         // Normalize datetime-local (YYYY-MM-DDTHH:MM) to MySQL DATETIME (YYYY-MM-DD HH:MM:SS)
@@ -73,13 +75,13 @@ class HomeController
         }
 
         // Simple validation
-        if ($id_besoin <= 0 || $id_ville <= 0 || $id_unite <= 0 || $libellee === '') {
+        if ($id_objet <= 0 || $id_ville <= 0) {
             $this->app->redirect(BASE_URL . '/?created=0');
             return;
         }
 
         try {
-            $this->sinistreModel->insert($id_besoin, $libellee, $id_ville, $quantite, $id_unite, $date);
+            $this->sinistreModel->insertByObjet($id_objet, $id_ville, $quantite, $date);
             $this->app->redirect(BASE_URL . '/?created=1');
         } catch (\Throwable $e) {
             $this->app->redirect(BASE_URL . '/?created=0');

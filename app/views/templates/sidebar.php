@@ -11,8 +11,10 @@ $currentPage = basename($_SERVER['REQUEST_URI'], '?');
 <div class="sidebar-container">
     <div class="sidebar">
         <div class="sidebar-header">
-            <h1>📊 BNGRC</h1>
-            <p>Gestion des Besoins</p>
+            <div style="width: 160px; height: 160px; border-radius: 50%; background-color: #fff; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                <img src="<?php echo BASE_URL; ?>/assets/images/BNGRC.png" alt="BNGRC" style="width: 140px; height: auto; display: block;">
+            </div>
+            <!-- <p>Gestion des Besoins</p> -->
         </div>
 
         <ul class="nav-menu">

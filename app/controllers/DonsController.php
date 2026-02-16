@@ -8,6 +8,7 @@ use app\models\VilleModel;
 use app\models\UniteModel;
 use app\models\DonModel;
 use app\models\SinistreModel;
+use app\models\ObjetModel;
 
 class DonsController
 {
@@ -17,6 +18,7 @@ class DonsController
     protected UniteModel $uniteModel;
     protected DonModel $donModel;
     protected SinistreModel $sinistreModel;
+    protected ObjetModel $objetModel;
 
     public function __construct($app)
     {
@@ -26,6 +28,7 @@ class DonsController
         $this->uniteModel = new UniteModel($this->app->db());
         $this->donModel = new DonModel($this->app->db());
         $this->sinistreModel = new SinistreModel($this->app->db());
+        $this->objetModel = new ObjetModel($this->app->db());
     }
 
     public function showForm()
@@ -44,20 +47,17 @@ class DonsController
             return;
         }
 
-        $id_besoin = isset($_POST['type_besoin']) ? (int)$_POST['type_besoin'] : 0;
+        $id_objet = isset($_POST['objet']) ? (int)$_POST['objet'] : 0;
         $id_ville = isset($_POST['ville']) ? (int)$_POST['ville'] : 0;
-        $id_unite = isset($_POST['unite']) ? (int)$_POST['unite'] : 0;
         $quantite = isset($_POST['quantite']) ? (int)$_POST['quantite'] : 0;
-        $libellee = isset($_POST['libellee']) ? trim((string)$_POST['libellee']) : null;
         $date = isset($_POST['date']) && $_POST['date'] !== '' ? $_POST['date'] : null;
 
-        if ($id_besoin <= 0 || $id_ville <= 0 || $id_unite <= 0) {
+        if ($id_objet <= 0 || $id_ville <= 0) {
             $this->app->redirect(BASE_URL . '/dons?created=0');
             return;
         }
-
         try {
-            $this->donModel->insert($id_ville, $id_besoin, $id_unite, $quantite, $libellee);
+            $this->donModel->insertByObjet($id_ville, $id_objet, $quantite, $date);
             $this->app->redirect(BASE_URL . '/dons?created=1');
         } catch (\Throwable $e) {
             $this->app->redirect(BASE_URL . '/dons?created=0');
@@ -190,6 +190,7 @@ class DonsController
             'besoins' => $this->besoinModel->get(),
             'villes' => $this->villeModel->get(),
             'unites' => $this->uniteModel->get(),
+            'objets' => $this->objetModel->getAll(),
             'dispatchResults' => [],
             'dispatchStatus' => null,
             'dispatchError' => null,

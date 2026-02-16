@@ -8,6 +8,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Insérer Besoins - BNGRC</title>
+    <link rel="icon" type="image/png" href="<?php echo BASE_URL; ?>/assets/images/BNGRC.png">
     <!-- Stylesheets -->
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/theme.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/layout.css">
@@ -45,7 +46,7 @@
                                 <div class="form-group-wrapper">
                                     <label class="form-label required">Type de Besoin</label>
                                     <?php if (!empty($besoins) && is_array($besoins)): ?>
-                                        <select name="type_besoin" class="form-select" required>
+                                        <select name="type_besoin" id="type-besoin-select" class="form-select" required>
                                             <option value="">-- Sélectionner un type --</option>
                                             <?php foreach ($besoins as $b): ?>
                                                 <option value="<?php echo htmlspecialchars($b['id'], ENT_QUOTES); ?>">
@@ -59,8 +60,19 @@
                                 </div>
 
                                 <div class="form-group-wrapper">
-                                    <label class="form-label required">Libellé</label>
-                                    <input type="text" name="libellee" class="form-control" placeholder="Description du besoin" required>
+                                    <label class="form-label required">Objet</label>
+                                    <?php if (!empty($objets) && is_array($objets)): ?>
+                                        <select name="objet" id="objet-select" class="form-select" required>
+                                            <option value="">-- Sélectionner un objet --</option>
+                                            <?php foreach ($objets as $o): ?>
+                                                <option value="<?php echo htmlspecialchars($o['id'], ENT_QUOTES); ?>" data-besoin="<?php echo htmlspecialchars($o['id_besoins'], ENT_QUOTES); ?>" data-unite="<?php echo htmlspecialchars($o['id_unite'], ENT_QUOTES); ?>" data-prix="<?php echo htmlspecialchars($o['prix_unitaire'], ENT_QUOTES); ?>">
+                                                    <?php echo htmlspecialchars($o['libellee']); ?> — <?php echo htmlspecialchars($o['besoin']); ?> (<?php echo htmlspecialchars($o['unite']); ?>)
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    <?php else: ?>
+                                        <input type="text" name="libellee" class="form-control" placeholder="Description du besoin" required>
+                                    <?php endif; ?>
                                 </div>
 
                                 <div class="form-group-wrapper">
@@ -89,7 +101,7 @@
                                 <div class="form-group-wrapper">
                                     <label class="form-label required">Unité</label>
                                     <?php if (!empty($unites) && is_array($unites)): ?>
-                                        <select name="unite" class="form-select" required>
+                                        <select name="unite" id="unite-select" class="form-select" required>
                                             <option value="">-- Sélectionner une unité --</option>
                                             <?php foreach ($unites as $u): ?>
                                                 <option value="<?php echo htmlspecialchars($u['id'], ENT_QUOTES); ?>">
@@ -100,6 +112,12 @@
                                     <?php else: ?>
                                         <input type="text" name="unite" class="form-control" placeholder="Unité" value="Litre">
                                     <?php endif; ?>
+                                </div>
+
+                                <div class="form-group-wrapper">
+                                    <label class="form-label">Prix unitaire</label>
+                                    <input type="text" id="prix-display" class="form-control" disabled placeholder="—">
+                                    <input type="hidden" name="prix_unitaire" id="prix-hidden" value="">
                                 </div>
 
                                 <div class="form-group-wrapper">
@@ -137,6 +155,52 @@
                 </div>
             </div>
 
+            <script>
+                (function() {
+                    var objetSelect = document.getElementById('objet-select');
+                    var besoinSelect = document.getElementById('type-besoin-select');
+                    var uniteSelect = document.getElementById('unite-select');
+                    var prixDisplay = document.getElementById('prix-display');
+                    var prixHidden = document.getElementById('prix-hidden');
+
+                    function formatPrix(v) {
+                        var n = Number(v);
+                        if (!isFinite(n)) return '';
+                        return n.toLocaleString('fr-FR', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        }) + ' Ar';
+                    }
+
+                    function syncFromObjet() {
+                        if (!objetSelect) return;
+                        var opt = objetSelect.options[objetSelect.selectedIndex];
+                        if (!opt || !opt.value) return;
+                        var besoinId = opt.getAttribute('data-besoin');
+                        var uniteId = opt.getAttribute('data-unite');
+                        var prix = opt.getAttribute('data-prix');
+                        if (besoinId && besoinSelect) {
+                            besoinSelect.value = besoinId;
+                        }
+                        if (uniteId && uniteSelect) {
+                            uniteSelect.value = uniteId;
+                        }
+                        if (prixDisplay) {
+                            prixDisplay.value = formatPrix(prix);
+                        }
+                        if (prixHidden) {
+                            prixHidden.value = prix || '';
+                        }
+                    }
+
+                    if (objetSelect) {
+                        objetSelect.addEventListener('change', syncFromObjet);
+                        window.addEventListener('load', function() {
+                            setTimeout(syncFromObjet, 10);
+                        });
+                    }
+                })();
+            </script>
             <?php include __DIR__ . '/templates/footer.php'; ?>
         </div>
     </div>

@@ -15,58 +15,67 @@ class DonModel
 
     public function get(): array
     {
-        $sql = "SELECT d.id, v.nom AS ville, b.nom AS besoin, d.libellee, d.quantite, u.nom AS unite, d.date
-                FROM BNGRC_dons d
-                JOIN BNGRC_ville v ON d.id_ville = v.id
-                JOIN BNGRC_besoins b ON d.id_besoins = b.id
-                JOIN BNGRC_unite u ON d.id_unite = u.id
-                ORDER BY d.date DESC";
+        $sql = "SELECT d.id, v.nom AS ville, b.nom AS besoin, o.libellee, d.quantite, u.nom AS unite, d.date
+            FROM BNGRC_dons d
+            JOIN BNGRC_ville v ON d.id_ville = v.id
+            JOIN BNGRC_objet o ON d.id_objet = o.id
+            JOIN BNGRC_besoins b ON o.id_besoins = b.id
+            JOIN BNGRC_unite u ON o.id_unite = u.id
+            ORDER BY d.date DESC";
         $stmt = $this->db->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getForDispatch(): array
     {
-        $sql = "SELECT d.id, d.libellee, d.quantite, v.nom AS ville, b.nom AS besoin, u.nom AS unite
-                FROM BNGRC_dons d
-                JOIN BNGRC_ville v ON d.id_ville = v.id
-                JOIN BNGRC_besoins b ON d.id_besoins = b.id
-                JOIN BNGRC_unite u ON d.id_unite = u.id
-                ORDER BY d.id";
+        $sql = "SELECT d.id, o.libellee AS libellee, d.quantite, v.nom AS ville, b.nom AS besoin, u.nom AS unite
+            FROM BNGRC_dons d
+            JOIN BNGRC_ville v ON d.id_ville = v.id
+            JOIN BNGRC_objet o ON d.id_objet = o.id
+            JOIN BNGRC_besoins b ON o.id_besoins = b.id
+            JOIN BNGRC_unite u ON o.id_unite = u.id
+            ORDER BY d.id";
         $stmt = $this->db->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getById(int $id): ?array
     {
-        $sql = "SELECT d.id, v.nom AS ville, b.nom AS besoin, d.libellee, d.quantite, u.nom AS unite, d.date
+        $sql = "SELECT d.id, v.nom AS ville, b.nom AS besoin, o.libellee, d.quantite, u.nom AS unite, d.date
                 FROM BNGRC_dons d
                 JOIN BNGRC_ville v ON d.id_ville = v.id
-                JOIN BNGRC_besoins b ON d.id_besoins = b.id
-                JOIN BNGRC_unite u ON d.id_unite = u.id
+                JOIN BNGRC_objet o ON d.id_objet = o.id
+                JOIN BNGRC_besoins b ON o.id_besoins = b.id
+                JOIN BNGRC_unite u ON o.id_unite = u.id
                 WHERE d.id = ? LIMIT 1";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return $row === false ? null : $row;
     }
-
-    public function insert(int $id_ville, int $id_besoins, int $id_unite, int $quantite, ?string $libellee = null): int
+    public function insertByObjet(int $id_ville, int $id_objet, int $quantite, ?string $date = null): int
     {
-        $sql = "INSERT INTO BNGRC_dons (id_ville, id_besoins, quantite, id_unite, libellee) VALUES (?, ?, ?, ?, ?)";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$id_ville, $id_besoins, $quantite, $id_unite, $libellee]);
+        if ($date !== null) {
+            $sql = "INSERT INTO BNGRC_dons (id_ville, id_objet, quantite, date) VALUES (?, ?, ?, ?)";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$id_ville, $id_objet, $quantite, $date]);
+        } else {
+            $sql = "INSERT INTO BNGRC_dons (id_ville, id_objet, quantite) VALUES (?, ?, ?)";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$id_ville, $id_objet, $quantite]);
+        }
         return (int)$this->db->lastInsertId();
     }
 
     public function update(int $id, int $id_ville, int $id_besoins, int $id_unite, int $quantite, ?string $libellee = null, ?string $date = null): bool
     {
+        // Keep legacy signature but update through objet join requires providing objet id via controller
         if ($date === null) {
-            $sql = "UPDATE BNGRC_dons SET id_ville = ?, id_besoins = ?, id_unite = ?, quantite = ?, libellee = ? WHERE id = ?";
-            $params = [$id_ville, $id_besoins, $id_unite, $quantite, $libellee, $id];
+            $sql = "UPDATE BNGRC_dons SET id_ville = ?, quantite = ? WHERE id = ?";
+            $params = [$id_ville, $quantite, $id];
         } else {
-            $sql = "UPDATE BNGRC_dons SET id_ville = ?, id_besoins = ?, id_unite = ?, quantite = ?, libellee = ?, date = ? WHERE id = ?";
-            $params = [$id_ville, $id_besoins, $id_unite, $quantite, $libellee, $date, $id];
+            $sql = "UPDATE BNGRC_dons SET id_ville = ?, quantite = ?, date = ? WHERE id = ?";
+            $params = [$id_ville, $quantite, $date, $id];
         }
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);

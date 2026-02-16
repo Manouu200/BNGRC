@@ -15,11 +15,12 @@ class SinistreModel
 
     public function get(): array
     {
-        $sql = "SELECT s.id, s.id_besoins, b.nom AS besoin, s.libellee, s.id_ville, v.nom AS ville, s.quantite, s.id_unite, u.nom AS unite, s.date AS date, s.id_etat, e.nom AS etat
+        $sql = "SELECT s.id, s.id_objet, o.libellee, o.id_besoins, b.nom AS besoin, s.id_ville, v.nom AS ville, s.quantite, o.id_unite AS id_unite, u.nom AS unite, s.date AS date, s.id_etat, e.nom AS etat
             FROM BNGRC_sinistre s
-            JOIN BNGRC_besoins b ON s.id_besoins = b.id
+            JOIN BNGRC_objet o ON s.id_objet = o.id
+            JOIN BNGRC_besoins b ON o.id_besoins = b.id
             JOIN BNGRC_ville v ON s.id_ville = v.id
-            JOIN BNGRC_unite u ON s.id_unite = u.id
+            JOIN BNGRC_unite u ON o.id_unite = u.id
             JOIN BNGRC_etat e ON s.id_etat = e.id
             ORDER BY s.date ASC, s.id ASC";
         $stmt = $this->db->query($sql);
@@ -28,11 +29,12 @@ class SinistreModel
 
     public function getById(int $id): ?array
     {
-        $sql = "SELECT s.id, s.id_besoins, b.nom AS besoin, s.libellee, s.id_ville, v.nom AS ville, s.quantite, s.id_unite, u.nom AS unite, s.date AS date, s.id_etat, e.nom AS etat
+        $sql = "SELECT s.id, s.id_objet, o.libellee, o.id_besoins, b.nom AS besoin, s.id_ville, v.nom AS ville, s.quantite, o.id_unite AS id_unite, u.nom AS unite, s.date AS date, s.id_etat, e.nom AS etat
             FROM BNGRC_sinistre s
-            JOIN BNGRC_besoins b ON s.id_besoins = b.id
+            JOIN BNGRC_objet o ON s.id_objet = o.id
+            JOIN BNGRC_besoins b ON o.id_besoins = b.id
             JOIN BNGRC_ville v ON s.id_ville = v.id
-            JOIN BNGRC_unite u ON s.id_unite = u.id
+            JOIN BNGRC_unite u ON o.id_unite = u.id
             JOIN BNGRC_etat e ON s.id_etat = e.id
             WHERE s.id = ? LIMIT 1";
         $stmt = $this->db->prepare($sql);
@@ -40,27 +42,26 @@ class SinistreModel
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return $row === false ? null : $row;
     }
-
-    public function insert(int $id_besoins, string $libellee, int $id_ville, int $quantite, int $id_unite, ?string $date = null): int
+    public function insertByObjet(int $id_objet, int $id_ville, int $quantite, ?string $date = null): int
     {
         if ($date !== null) {
-            $sql = "INSERT INTO BNGRC_sinistre (id_besoins, libellee, id_ville, quantite, id_unite, date) VALUES (?, ?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO BNGRC_sinistre (id_objet, id_ville, quantite, date) VALUES (?, ?, ?, ?)";
             $stmt = $this->db->prepare($sql);
-            $stmt->execute([$id_besoins, $libellee, $id_ville, $quantite, $id_unite, $date]);
+            $stmt->execute([$id_objet, $id_ville, $quantite, $date]);
         } else {
-            $sql = "INSERT INTO BNGRC_sinistre (id_besoins, libellee, id_ville, quantite, id_unite) VALUES (?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO BNGRC_sinistre (id_objet, id_ville, quantite) VALUES (?, ?, ?)";
             $stmt = $this->db->prepare($sql);
-            $stmt->execute([$id_besoins, $libellee, $id_ville, $quantite, $id_unite]);
+            $stmt->execute([$id_objet, $id_ville, $quantite]);
         }
 
         return (int)$this->db->lastInsertId();
     }
 
-    public function update(int $id, int $id_besoins, string $libellee, int $id_ville, int $quantite, int $id_unite): bool
+    public function updateByObjet(int $id, int $id_objet, int $id_ville, int $quantite): bool
     {
-        $sql = "UPDATE BNGRC_sinistre SET id_besoins = ?, libellee = ?, id_ville = ?, quantite = ?, id_unite = ? WHERE id = ?";
+        $sql = "UPDATE BNGRC_sinistre SET id_objet = ?, id_ville = ?, quantite = ? WHERE id = ?";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([$id_besoins, $libellee, $id_ville, $quantite, $id_unite, $id]);
+        $stmt->execute([$id_objet, $id_ville, $quantite, $id]);
         return $stmt->rowCount() > 0;
     }
 
