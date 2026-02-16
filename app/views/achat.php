@@ -58,7 +58,11 @@
                                                 ?>
                                                 <span style="font-size:0.9rem; opacity:0.85;">Ar</span>
                                             </h2>
-                                            <p style="margin-top:0.5rem; color:var(--muted);">Somme des dons</p>
+                                            <?php $fraisPercent = isset($fraisPercent) ? (float)$fraisPercent : 0; ?>
+                                            <p style="margin-top:0.5rem; color:var(--muted);">Somme des dons
+                                                &nbsp;·&nbsp; <strong>Frais d'achat :</strong> <?php echo number_format($fraisPercent, 2, ',', ' '); ?>%</p>
+                                            </p>
+                                            <input type="hidden" id="achat-frais-percent" value="<?php echo htmlspecialchars((string)$fraisPercent, ENT_QUOTES); ?>">
                                         </div>
                                     </td>
                                 </tr>
@@ -199,6 +203,9 @@
             var totalValueElem = document.getElementById('achat-total-value');
             var totalDisponible = totalCard ? parseFloat(totalCard.getAttribute('data-total-argent')) || 0 : 0;
 
+            var fraisPercentElem = document.getElementById('achat-frais-percent');
+            var fraisPercent = fraisPercentElem ? parseFloat(fraisPercentElem.value) || 0 : 0;
+
             var buttons = document.querySelectorAll('.achat-btn');
             buttons.forEach(function(btn) {
                 btn.addEventListener('click', function() {
@@ -211,14 +218,17 @@
                         alert('Prix ou quantité invalide pour cet achat.');
                         return;
                     }
+                    // Calculer montant requis en incluant les frais
+                    var required = prix * quantite * (1 + (fraisPercent / 100));
+                    // arrondir à entiers (ou garder 2 décimales) — ici on arrondit au nombre entier le plus proche
+                    required = Math.round(required);
 
-                    var required = prix * quantite;
                     if (required > totalDisponible) {
                         alert('Fonds insuffisants. Il faut ' + required.toLocaleString('fr-FR') + ' Ar mais il reste seulement ' + totalDisponible.toLocaleString('fr-FR') + ' Ar.');
                         return;
                     }
 
-                    var message = 'Confirmer l\'achat de ' + quantite + ' unité(s) (' + (prix.toLocaleString('fr-FR') + ' Ar/u') + ') pour un total de ' + required.toLocaleString('fr-FR') + ' Ar ?';
+                    var message = 'Confirmer l\'achat de ' + quantite + ' unité(s) (' + (prix.toLocaleString('fr-FR') + ' Ar/u') + ')\nFrais: ' + fraisPercent + '%\nTotal à payer: ' + required.toLocaleString('fr-FR') + ' Ar ?';
                     if (!confirm(message)) return;
 
                     this.disabled = true;

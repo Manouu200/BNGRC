@@ -67,11 +67,15 @@ class AchatController
             }));
         }
 
+        // Pourcentage de frais appliqué aux achats (ex: 10 pour 10%)
+        $fraisPercent = 10;
+
         $this->app->render('achat.php', [
             'totalArgent' => $total,
             'sinistresNonArgent' => $sinistres,
             'purchasedObjetIds' => $purchasedObjetIds,
             'achatList' => $achatList,
+            'fraisPercent' => $fraisPercent,
         ]);
     }
 
@@ -120,7 +124,9 @@ class AchatController
             }
 
             $totalArgent = (int)round($this->donModel->getTotalArgent());
-            $amountToSpend = (int)round($qtyNeeded * $prix);
+            // Inclure les frais en pourcentage
+            $fraisPercent = 10; // garder cohérent avec showAchat; remplacer par config si besoin
+            $amountToSpend = (int)round($qtyNeeded * $prix * (1 + ($fraisPercent / 100)));
 
             if ($totalArgent <= 0) {
                 throw new \RuntimeException('Pas de fonds disponibles');
@@ -184,6 +190,7 @@ class AchatController
                 'total' => $newTotal,
                 'spent' => $amountToSpend,
                 'achat_date' => $achatDate,
+                'frais_percent' => $fraisPercent,
             ]);
             return;
         } catch (\Throwable $e) {
