@@ -11,7 +11,7 @@
     <link rel="icon" type="image/png" href="<?php echo BASE_URL; ?>/assets/images/BNGRC.png">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/theme.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/layout.css">
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/dashboard.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/achat.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/buttons.css">
 </head>
 

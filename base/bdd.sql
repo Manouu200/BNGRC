@@ -97,7 +97,8 @@ INSERT INTO BNGRC_etat (nom) VALUES
     ('satisfait');
 
 -- Vue présentant les sinistres sans exposer les identifiants
-CREATE VIEW IF NOT EXISTS BNGRC_vue_sinistre AS
+DROP VIEW IF EXISTS BNGRC_vue_sinistre;
+CREATE VIEW BNGRC_vue_sinistre AS
 SELECT
     v.nom AS ville,
     b.nom AS besoin,
@@ -114,7 +115,8 @@ JOIN BNGRC_unite u ON o.id_unite = u.id
 JOIN BNGRC_etat e ON s.id_etat = e.id;
 
 -- Vue présentant les dons avec les noms liés (ville, besoin, unité)
-CREATE VIEW IF NOT EXISTS BNGRC_vue_dons AS
+DROP VIEW IF EXISTS BNGRC_vue_dons;
+CREATE VIEW BNGRC_vue_dons AS
 SELECT
     d.id,
     v.nom AS ville,

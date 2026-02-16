@@ -1,0 +1,172 @@
+/* ============================================
+   ACHAT PAGE STYLES - Professional Design
+   ============================================ */
+
+.achat-page {
+    animation: fadeIn var(--transition-base) ease-out;
+}
+
+/* Page Header */
+.page-header {
+    background: linear-gradient(135deg, #16A34A 0%, #14532D 100%);
+    color: var(--white);
+    padding: var(--spacing-2xl);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-2xl);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+}
+
+.page-title {
+    font-size: var(--font-size-2xl);
+    margin: 0;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.5px;
+}
+
+.page-subtitle {
+    margin: var(--spacing-sm) 0 0 0;
+    opacity: 0.95;
+    font-size: var(--font-size-base);
+}
+
+/* Achat Total Card */
+.achat-total-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(240, 253, 250, 0.98) 100%);
+    padding: var(--spacing-2xl);
+    border-radius: var(--radius-lg);
+    border: 2px solid rgba(22, 163, 74, 0.3);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+    transition: all var(--transition-base);
+}
+
+.achat-total-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 60px rgba(22, 163, 74, 0.2);
+    border-color: rgba(22, 163, 74, 0.5);
+}
+
+#achat-total-value {
+    background: linear-gradient(135deg, #16A34A 0%, #14532D 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
+    font-size: 2.75rem;
+    font-weight: var(--font-weight-bold);
+}
+
+/* Table Section */
+.table-section {
+    background: rgba(255, 255, 255, 0.98);
+    padding: var(--spacing-2xl);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(22, 163, 74, 0.2);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.table-section h3 {
+    color: var(--dark);
+    font-size: var(--font-size-lg);
+    margin: 0 0 var(--spacing-lg) 0;
+    padding-bottom: var(--spacing-md);
+    border-bottom: 2px solid rgba(22, 163, 74, 0.3);
+}
+
+/* Table Wrapper Override for Achat */
+.table-section .table-wrapper {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(16, 185, 129, 0.15);
+    box-shadow: none;
+}
+
+.table-section table thead {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+    border-bottom: 2px solid rgba(16, 185, 129, 0.3);
+}
+
+.table-section table thead th {
+    color: var(--dark);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.5px;
+}
+
+.table-section table tbody tr {
+    border-bottom: 1px solid rgba(16, 185, 129, 0.1);
+}
+
+.table-section table tbody tr:hover {
+    background-color: rgba(16, 185, 129, 0.05);
+}
+
+/* Buttons */
+.achat-btn {
+    background: linear-gradient(135deg, #16A34A 0%, #14532D 100%);
+    color: var(--white);
+    border: none;
+    font-weight: var(--font-weight-semibold);
+    transition: all var(--transition-fast);
+}
+
+.achat-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #14532D 0%, #052E16 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(22, 163, 74, 0.4);
+}
+
+.achat-btn:disabled {
+    background: linear-gradient(135deg, #16A34A 0%, #14532D 100%);
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Card Base */
+.card {
+    background: rgba(255, 255, 255, 0.98);
+    border: 1px solid rgba(22, 163, 74, 0.2);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: all var(--transition-base);
+}
+
+.card:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
+.card-body {
+    padding: var(--spacing-xl);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .page-header {
+        padding: var(--spacing-xl);
+    }
+
+    .page-title {
+        font-size: var(--font-size-xl);
+    }
+
+    .achat-total-card {
+        padding: var(--spacing-xl);
+    }
+
+    #achat-total-value {
+        font-size: 2rem;
+    }
+
+    .table-section {
+        padding: var(--spacing-lg);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

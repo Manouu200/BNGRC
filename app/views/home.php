@@ -29,13 +29,6 @@
                         <h1 class="page-title">📝 Enregistrement de Besoin</h1>
                         <p class="page-subtitle">Remplissez le formulaire ci-dessous pour ajouter un nouveau besoin</p>
                     </div>
-
-                    <!-- Welcome Box -->
-                    <div class="welcome-box">
-                        <h2>Bienvenue dans le formulaire d'enregistrement</h2>
-                        <p>Utilisez ce formulaire pour enregistrer un nouveau besoin en secours. Tous les champs marqués d'une astérisque (*) sont obligatoires.</p>
-                    </div>
-
                     <!-- Form Section -->
                     <div class="form-section-home">
                         <h2 class="form-title">💼 Détails du Besoin</h2>
