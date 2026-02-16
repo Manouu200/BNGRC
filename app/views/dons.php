@@ -150,8 +150,8 @@
                                     <select name="objet" id="objet-select" class="form-select">
                                         <option value="">-- Sélectionner un objet --</option>
                                         <?php foreach ($objets as $o): ?>
-                                            <option value="<?php echo htmlspecialchars($o['id'], ENT_QUOTES); ?>" data-besoin="<?php echo htmlspecialchars($o['id_besoins'], ENT_QUOTES); ?>" data-unite="<?php echo htmlspecialchars($o['id_unite'], ENT_QUOTES); ?>" data-prix="<?php echo htmlspecialchars($o['prix_unitaire'], ENT_QUOTES); ?>">
-                                                <?php echo htmlspecialchars($o['libellee']); ?> — <?php echo htmlspecialchars($o['besoin']); ?> (<?php echo htmlspecialchars($o['unite']); ?>)
+                                            <option value="<?php echo htmlspecialchars($o['id'] ?? '', ENT_QUOTES); ?>" data-besoin="<?php echo htmlspecialchars($o['id_besoins'] ?? '', ENT_QUOTES); ?>" data-unite="<?php echo htmlspecialchars($o['id_unite'] ?? '', ENT_QUOTES); ?>" data-prix="<?php echo htmlspecialchars($o['prix_unitaire'] ?? '', ENT_QUOTES); ?>">
+                                                <?php echo htmlspecialchars($o['libellee'] ?? ''); ?> — <?php echo htmlspecialchars($o['besoin'] ?? ''); ?> (<?php echo htmlspecialchars($o['unite'] ?? ''); ?>)
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
@@ -168,16 +168,6 @@
 
                             <div class="submit-button-wrapper">
                                 <button type="reset" class="btn btn-outline-secondary">🔄 Réinitialiser</button>
-                                <button
-                                    type="submit"
-                                    id="btn-dispatch-dons"
-                                    class="btn btn-outline-primary"
-                                    title="Distribuer les dons vers les besoins correspondants"
-                                    formaction="<?php echo BASE_URL; ?>/dons/dispatch"
-                                    formmethod="post"
-                                    formnovalidate>
-                                    ⤴ Dispatcher les dons
-                                </button>
                                 <button type="submit" class="btn btn-primary">✓ Enregistrer le don</button>
                             </div>
                         </form>

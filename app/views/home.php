@@ -65,8 +65,8 @@
                                         <select name="objet" id="objet-select" class="form-select" required>
                                             <option value="">-- Sélectionner un objet --</option>
                                             <?php foreach ($objets as $o): ?>
-                                                <option value="<?php echo htmlspecialchars($o['id'], ENT_QUOTES); ?>" data-besoin="<?php echo htmlspecialchars($o['id_besoins'], ENT_QUOTES); ?>" data-unite="<?php echo htmlspecialchars($o['id_unite'], ENT_QUOTES); ?>" data-prix="<?php echo htmlspecialchars($o['prix_unitaire'], ENT_QUOTES); ?>">
-                                                    <?php echo htmlspecialchars($o['libellee']); ?> — <?php echo htmlspecialchars($o['besoin']); ?> (<?php echo htmlspecialchars($o['unite']); ?>)
+                                                <option value="<?php echo htmlspecialchars($o['id'] ?? '', ENT_QUOTES); ?>" data-besoin="<?php echo htmlspecialchars($o['id_besoins'] ?? '', ENT_QUOTES); ?>" data-unite="<?php echo htmlspecialchars($o['id_unite'] ?? '', ENT_QUOTES); ?>" data-prix="<?php echo htmlspecialchars($o['prix_unitaire'] ?? '', ENT_QUOTES); ?>">
+                                                    <?php echo htmlspecialchars($o['libellee'] ?? ''); ?> — <?php echo htmlspecialchars($o['besoin'] ?? ''); ?> (<?php echo htmlspecialchars($o['unite'] ?? ''); ?>)
                                                 </option>
                                             <?php endforeach; ?>
                                         </select>

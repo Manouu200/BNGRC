@@ -177,11 +177,33 @@ class DonsController
             $errorMessage = $e->getMessage();
         }
 
-        $this->renderForm([
+        $this->renderDashboard([
             'dispatchResults' => $results,
             'dispatchStatus' => $status,
             'dispatchError' => $errorMessage,
         ]);
+    }
+
+    protected function renderDashboard(array $extra = []): void
+    {
+        $sinistres = $this->sinistreModel->get();
+        $dons = [];
+        try {
+            $stmt = $this->app->db()->query('SELECT * FROM BNGRC_vue_dons');
+            $dons = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\Throwable $e) {
+            // Vue might not exist yet
+        }
+
+        $data = [
+            'sinistres' => $sinistres,
+            'dons' => $dons,
+            'dispatchResults' => [],
+            'dispatchStatus' => null,
+            'dispatchError' => null,
+        ];
+
+        $this->app->render('dashboard.php', array_merge($data, $extra));
     }
 
     protected function renderForm(array $extra = []): void
