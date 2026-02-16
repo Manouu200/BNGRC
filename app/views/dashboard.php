@@ -1,62 +1,188 @@
 <?php
 // Vue : dashboard
 ?>
-<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-<link rel="stylesheet" href="/assets/css/sidebar.css">
-<link rel="stylesheet" href="/assets/css/bootstrap-icons.css">
-
-<div class="container-fluid">
-    <div class="row flex-nowrap">
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord - BNGRC</title>
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/assets/css/theme.css">
+    <link rel="stylesheet" href="/assets/css/layout.css">
+    <link rel="stylesheet" href="/assets/css/forms.css">
+    <link rel="stylesheet" href="/assets/css/buttons.css">
+    <link rel="stylesheet" href="/assets/css/tables.css">
+    <link rel="stylesheet" href="/assets/css/dashboard.css">
+</head>
+<body>
+    <div class="container-main">
         <?php include __DIR__ . '/templates/sidebar.php'; ?>
+        
+        <div class="main-content">
+            <div class="page-wrapper">
+                <div class="dashboard-page">
+                    <!-- Page Header -->
+                    <div class="dashboard-header">
+                        <div>
+                            <h1 class="dashboard-title">📊 Tableau de Bord</h1>
+                            <p class="page-subtitle">Consultez tous les besoins enregistrés</p>
+                        </div>
+                        <div class="dashboard-actions">
+                            <a href="/" class="btn btn-primary">
+                                <span>➕</span> Ajouter un Besoin
+                            </a>
+                        </div>
+                    </div>
 
-        <div class="col py-3">
-            <main class="p-3">
-                <div class="table-responsive mt-3">
-                    <style>
-                        /* Forcer affichage de bordure si le CSS bootstrap local n'applique pas */
-                        .table-bordered,
-                        .table-bordered th,
-                        .table-bordered td {
-                            border: 1px solid #dee2e6 !important;
-                        }
+                    <!-- Stats Section -->
+                    <div class="dashboard-stats">
+                        <div class="stat-item">
+                            <div class="stat-item-header">
+                                <div class="stat-item-title">Total Besoins</div>
+                                <div class="stat-item-icon">📋</div>
+                            </div>
+                            <div class="stat-item-value"><?php echo !empty($sinistres) ? count($sinistres) : '0'; ?></div>
+                            <div class="stat-item-change">↑ Actualisé</div>
+                        </div>
+                        
+                        <div class="stat-item">
+                            <div class="stat-item-header">
+                                <div class="stat-item-title">Villes Touchées</div>
+                                <div class="stat-item-icon">🗺️</div>
+                            </div>
+                            <div class="stat-item-value"><?php 
+                                $villes_count = 0;
+                                if (!empty($sinistres)) {
+                                    $villes_uniques = array_unique(array_column($sinistres, 'ville'));
+                                    $villes_count = count($villes_uniques);
+                                }
+                                echo $villes_count;
+                            ?></div>
+                            <div class="stat-item-change">Zones affectées</div>
+                        </div>
+                        
+                        <div class="stat-item">
+                            <div class="stat-item-header">
+                                <div class="stat-item-title">Types de Besoins</div>
+                                <div class="stat-item-icon">🏷️</div>
+                            </div>
+                            <div class="stat-item-value"><?php 
+                                $types_count = 0;
+                                if (!empty($sinistres)) {
+                                    $types_uniques = array_unique(array_column($sinistres, 'besoin'));
+                                    $types_count = count($types_uniques);
+                                }
+                                echo $types_count;
+                            ?></div>
+                            <div class="stat-item-change">Catégories</div>
+                        </div>
+                    </div>
 
-                        .table {
-                            border-collapse: collapse !important;
-                        }
-                    </style>
-                    <table class="table table-striped table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Ville</th>
-                                <th>Besoin</th>
-                                <th>Libellée</th>
-                                <th>Quantité</th>
-                                <th>Unité</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                    <!-- Filters -->
+                    <div class="filters-bar">
+                        <div class="filters-row">
+                            <div class="filter-group">
+                                <label>🔍 Rechercher</label>
+                                <input type="text" class="form-control" placeholder="Rechercher...">
+                            </div>
+                            <div class="filter-group">
+                                <label>📍 Ville</label>
+                                <select class="form-select">
+                                    <option>Toutes les villes</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>📋 Type</label>
+                                <select class="form-select">
+                                    <option>Tous les types</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <button type="button" class="btn btn-primary" style="margin-top: auto;">
+                                    <span>🔄</span> Actualiser
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Table Section -->
+                    <div class="table-section">
+                        <div class="table-header">
+                            <div class="table-header-title">Liste des Besoins</div>
+                            <div class="table-header-info">
+                                <div class="table-count">
+                                    <span>Total:</span>
+                                    <span class="table-count-badge"><?php echo !empty($sinistres) ? count($sinistres) : '0'; ?></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-container">
                             <?php if (!empty($sinistres) && is_array($sinistres)): ?>
-                                <?php foreach ($sinistres as $s): ?>
-                                    <tr>
-                                        <td><?php echo htmlspecialchars($s['ville'] ?? $s['ville'] ?? ''); ?></td>
-                                        <td><?php echo htmlspecialchars($s['besoin'] ?? $s['besoin'] ?? ''); ?></td>
-                                        <td><?php echo htmlspecialchars($s['libellee'] ?? ''); ?></td>
-                                        <td><?php echo htmlspecialchars((string)($s['quantite'] ?? '')); ?></td>
-                                        <td><?php echo htmlspecialchars($s['unite'] ?? ''); ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>📍 Ville</th>
+                                            <th>📋 Type de Besoin</th>
+                                            <th>📝 Libellé</th>
+                                            <th style="text-align: center;">📊 Quantité</th>
+                                            <th>📏 Unité</th>
+                                            <th style="text-align: center;">⚙️ Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($sinistres as $s): ?>
+                                            <tr>
+                                                <td>
+                                                    <strong><?php echo htmlspecialchars($s['ville'] ?? 'N/A'); ?></strong>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-primary">
+                                                        <?php echo htmlspecialchars($s['besoin'] ?? 'N/A'); ?>
+                                                    </span>
+                                                </td>
+                                                <td><?php echo htmlspecialchars($s['libellee'] ?? ''); ?></td>
+                                                <td style="text-align: center;">
+                                                    <strong><?php echo htmlspecialchars((string)($s['quantite'] ?? '')); ?></strong>
+                                                </td>
+                                                <td><?php echo htmlspecialchars($s['unite'] ?? ''); ?></td>
+                                                <td style="text-align: center;">
+                                                    <div class="table-actions">
+                                                        <button class="btn btn-sm btn-outline-primary" title="Voir les détails">👁️</button>
+                                                        <button class="btn btn-sm btn-outline-secondary" title="Modifier">✏️</button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
                             <?php else: ?>
-                                <tr>
-                                    <td colspan="5">Aucun sinistre trouvé.</td>
-                                </tr>
+                                <div class="empty-state">
+                                    <div class="empty-state-icon">📭</div>
+                                    <div class="empty-state-title">Aucun besoin enregistré</div>
+                                    <div class="empty-state-message">Commencez par <a href="/">ajouter un nouveau besoin</a></div>
+                                </div>
                             <?php endif; ?>
-                        </tbody>
-                    </table>
+                        </div>
+
+                        <?php if (!empty($sinistres)): ?>
+                            <div class="table-footer">
+                                <div class="table-footer-info">
+                                    Affichage de <strong><?php echo count($sinistres); ?></strong> besoin(s)
+                                </div>
+                                <div class="table-pagination">
+                                    <button class="btn btn-sm btn-outline-secondary" disabled>← Précédent</button>
+                                    <button class="btn btn-sm btn-outline-secondary" disabled>Suivant →</button>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    </div>
                 </div>
-            </main>
+            </div>
+            
+            <?php include __DIR__ . '/templates/footer.php'; ?>
         </div>
     </div>
-    <?php include __DIR__ . '/templates/footer.php'; ?>
-</div>
-
-<script src="/assets/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

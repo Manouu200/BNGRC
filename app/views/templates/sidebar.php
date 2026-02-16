@@ -6,24 +6,34 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 $displayName = $username ?? ($_SESSION['username'] ?? 'Utilisateur');
+$currentPage = basename($_SERVER['REQUEST_URI'], '?');
 ?>
-<div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
-    <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
-        <a class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-            <span class="fs-5 d-none d-sm-inline">Menu</span>
-        </a>
-        <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
+<div class="sidebar-container">
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1>📊 BNGRC</h1>
+            <p>Gestion des Besoins</p>
+        </div>
+        
+        <ul class="nav-menu">
             <li class="nav-item">
-                <a href="/" class="nav-link align-middle px-0 text-white">
-                    <i class="fs-4 bi bi-house"></i> <span class="ms-1 d-none d-sm-inline">Inserer besoins</span>
+                <a href="/" class="nav-link <?php echo $currentPage === '' ? 'active' : ''; ?>">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-label">Insérer Besoins</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/dashboard" class="nav-link align-middle px-0 text-white">
-                    <i class="fs-4 bi bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline">Tableau de bord</span>
+                <a href="/dashboard" class="nav-link <?php echo strpos($currentPage, 'dashboard') !== false ? 'active' : ''; ?>">
+                    <span class="nav-icon">📈</span>
+                    <span class="nav-label">Tableau de Bord</span>
                 </a>
             </li>
         </ul>
-        <hr>
+        
+        <hr style="border-color: rgba(255, 255, 255, 0.1); margin: 2rem 1rem;">
+        
+        <div style="padding: var(--spacing-lg); text-align: center; color: rgba(255, 255, 255, 0.7); font-size: var(--font-size-xs);">
+            <p style="margin: 0;">👤 <?php echo htmlspecialchars($displayName); ?></p>
+        </div>
     </div>
 </div>
