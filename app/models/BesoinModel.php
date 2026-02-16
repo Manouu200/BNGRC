@@ -15,14 +15,14 @@ class BesoinModel
 
     public function get(): array
     {
-        $sql = "SELECT id, nom FROM besoins ORDER BY nom";
+        $sql = "SELECT id, nom FROM BNGRC_besoins ORDER BY nom";
         $stmt = $this->db->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getById(int $id): ?array
     {
-        $sql = "SELECT id, nom FROM besoins WHERE id = ?";
+        $sql = "SELECT id, nom FROM BNGRC_besoins WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -31,7 +31,7 @@ class BesoinModel
 
     public function insert(string $nom): int
     {
-        $sql = "INSERT INTO besoins (nom) VALUES (?)";
+        $sql = "INSERT INTO BNGRC_besoins (nom) VALUES (?)";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$nom]);
         return (int)$this->db->lastInsertId();
@@ -39,7 +39,7 @@ class BesoinModel
 
     public function update(int $id, string $nom): bool
     {
-        $sql = "UPDATE besoins SET nom = ? WHERE id = ?";
+        $sql = "UPDATE BNGRC_besoins SET nom = ? WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$nom, $id]);
         return $stmt->rowCount() > 0;
@@ -47,7 +47,7 @@ class BesoinModel
 
     public function delete(int $id): bool
     {
-        $sql = "DELETE FROM besoins WHERE id = ?";
+        $sql = "DELETE FROM BNGRC_besoins WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id]);
         return $stmt->rowCount() > 0;

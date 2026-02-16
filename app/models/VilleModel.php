@@ -15,14 +15,14 @@ class VilleModel
 
     public function get(): array
     {
-        $sql = "SELECT id, nom FROM ville ORDER BY nom";
+        $sql = "SELECT id, nom FROM BNGRC_ville ORDER BY nom";
         $stmt = $this->db->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getById(int $id): ?array
     {
-        $sql = "SELECT id, nom FROM ville WHERE id = ?";
+        $sql = "SELECT id, nom FROM BNGRC_ville WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -31,7 +31,7 @@ class VilleModel
 
     public function insert(string $nom): int
     {
-        $sql = "INSERT INTO ville (nom) VALUES (?)";
+        $sql = "INSERT INTO BNGRC_ville (nom) VALUES (?)";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$nom]);
         return (int)$this->db->lastInsertId();
@@ -39,7 +39,7 @@ class VilleModel
 
     public function update(int $id, string $nom): bool
     {
-        $sql = "UPDATE ville SET nom = ? WHERE id = ?";
+        $sql = "UPDATE BNGRC_ville SET nom = ? WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$nom, $id]);
         return $stmt->rowCount() > 0;
@@ -47,7 +47,7 @@ class VilleModel
 
     public function delete(int $id): bool
     {
-        $sql = "DELETE FROM ville WHERE id = ?";
+        $sql = "DELETE FROM BNGRC_ville WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id]);
         return $stmt->rowCount() > 0;

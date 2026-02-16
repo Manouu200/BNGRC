@@ -1,5 +1,5 @@
 RewriteEngine On
-RewriteBase /ETU004253/livraison
+RewriteBase /BNGRC
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

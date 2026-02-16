@@ -16,10 +16,10 @@ class DonModel
     public function get(): array
     {
         $sql = "SELECT d.id, v.nom AS ville, b.nom AS besoin, d.libellee, d.quantite, u.nom AS unite, d.date
-                FROM dons d
-                JOIN ville v ON d.id_ville = v.id
-                JOIN besoins b ON d.id_besoins = b.id
-                JOIN unite u ON d.id_unite = u.id
+                FROM BNGRC_dons d
+                JOIN BNGRC_ville v ON d.id_ville = v.id
+                JOIN BNGRC_besoins b ON d.id_besoins = b.id
+                JOIN BNGRC_unite u ON d.id_unite = u.id
                 ORDER BY d.date DESC";
         $stmt = $this->db->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -28,10 +28,10 @@ class DonModel
     public function getForDispatch(): array
     {
         $sql = "SELECT d.id, d.libellee, d.quantite, v.nom AS ville, b.nom AS besoin, u.nom AS unite
-                FROM dons d
-                JOIN ville v ON d.id_ville = v.id
-                JOIN besoins b ON d.id_besoins = b.id
-                JOIN unite u ON d.id_unite = u.id
+                FROM BNGRC_dons d
+                JOIN BNGRC_ville v ON d.id_ville = v.id
+                JOIN BNGRC_besoins b ON d.id_besoins = b.id
+                JOIN BNGRC_unite u ON d.id_unite = u.id
                 ORDER BY d.id";
         $stmt = $this->db->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -40,10 +40,10 @@ class DonModel
     public function getById(int $id): ?array
     {
         $sql = "SELECT d.id, v.nom AS ville, b.nom AS besoin, d.libellee, d.quantite, u.nom AS unite, d.date
-                FROM dons d
-                JOIN ville v ON d.id_ville = v.id
-                JOIN besoins b ON d.id_besoins = b.id
-                JOIN unite u ON d.id_unite = u.id
+                FROM BNGRC_dons d
+                JOIN BNGRC_ville v ON d.id_ville = v.id
+                JOIN BNGRC_besoins b ON d.id_besoins = b.id
+                JOIN BNGRC_unite u ON d.id_unite = u.id
                 WHERE d.id = ? LIMIT 1";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id]);
@@ -53,7 +53,7 @@ class DonModel
 
     public function insert(int $id_ville, int $id_besoins, int $id_unite, int $quantite, ?string $libellee = null): int
     {
-        $sql = "INSERT INTO dons (id_ville, id_besoins, quantite, id_unite, libellee) VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO BNGRC_dons (id_ville, id_besoins, quantite, id_unite, libellee) VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id_ville, $id_besoins, $quantite, $id_unite, $libellee]);
         return (int)$this->db->lastInsertId();
@@ -62,10 +62,10 @@ class DonModel
     public function update(int $id, int $id_ville, int $id_besoins, int $id_unite, int $quantite, ?string $libellee = null, ?string $date = null): bool
     {
         if ($date === null) {
-            $sql = "UPDATE dons SET id_ville = ?, id_besoins = ?, id_unite = ?, quantite = ?, libellee = ? WHERE id = ?";
+            $sql = "UPDATE BNGRC_dons SET id_ville = ?, id_besoins = ?, id_unite = ?, quantite = ?, libellee = ? WHERE id = ?";
             $params = [$id_ville, $id_besoins, $id_unite, $quantite, $libellee, $id];
         } else {
-            $sql = "UPDATE dons SET id_ville = ?, id_besoins = ?, id_unite = ?, quantite = ?, libellee = ?, date = ? WHERE id = ?";
+            $sql = "UPDATE BNGRC_dons SET id_ville = ?, id_besoins = ?, id_unite = ?, quantite = ?, libellee = ?, date = ? WHERE id = ?";
             $params = [$id_ville, $id_besoins, $id_unite, $quantite, $libellee, $date, $id];
         }
         $stmt = $this->db->prepare($sql);
@@ -75,7 +75,7 @@ class DonModel
 
     public function delete(int $id): bool
     {
-        $sql = "DELETE FROM dons WHERE id = ?";
+        $sql = "DELETE FROM BNGRC_dons WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id]);
         return $stmt->rowCount() > 0;
@@ -83,7 +83,7 @@ class DonModel
 
     public function updateQuantite(int $id, int $quantite): bool
     {
-        $sql = "UPDATE dons SET quantite = ? WHERE id = ?";
+        $sql = "UPDATE BNGRC_dons SET quantite = ? WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$quantite, $id]);
         return $stmt->rowCount() > 0;

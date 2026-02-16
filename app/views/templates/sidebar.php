@@ -17,13 +17,13 @@ $currentPage = basename($_SERVER['REQUEST_URI'], '?');
 
         <ul class="nav-menu">
             <li class="nav-item">
-                <a href="/" class="nav-link <?php echo $currentPage === '' ? 'active' : ''; ?>">
+                <a href="<?php echo BASE_URL; ?>/" class="nav-link <?php echo $currentPage === '' ? 'active' : ''; ?>">
                     <span class="nav-icon">🏠</span>
                     <span class="nav-label">Insérer Besoins</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/dashboard" class="nav-link <?php echo strpos($currentPage, 'dashboard') !== false ? 'active' : ''; ?>">
+                <a href="<?php echo BASE_URL; ?>/dashboard" class="nav-link <?php echo strpos($currentPage, 'dashboard') !== false ? 'active' : ''; ?>">
                     <span class="nav-icon">📈</span>
                     <span class="nav-label">Tableau de Bord</span>
                 </a>

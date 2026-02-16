@@ -40,7 +40,7 @@ class DonsController
     public function createDon()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->app->redirect('/dons');
+            $this->app->redirect(BASE_URL . '/dons');
             return;
         }
 
@@ -52,22 +52,22 @@ class DonsController
         $date = isset($_POST['date']) && $_POST['date'] !== '' ? $_POST['date'] : null;
 
         if ($id_besoin <= 0 || $id_ville <= 0 || $id_unite <= 0) {
-            $this->app->redirect('/dons?created=0');
+            $this->app->redirect(BASE_URL . '/dons?created=0');
             return;
         }
 
         try {
             $this->donModel->insert($id_ville, $id_besoin, $id_unite, $quantite, $libellee);
-            $this->app->redirect('/dons?created=1');
+            $this->app->redirect(BASE_URL . '/dons?created=1');
         } catch (\Throwable $e) {
-            $this->app->redirect('/dons?created=0');
+            $this->app->redirect(BASE_URL . '/dons?created=0');
         }
     }
 
     public function dispatchDons()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->app->redirect('/dons');
+            $this->app->redirect(BASE_URL . '/dons');
             return;
         }
 
@@ -200,7 +200,7 @@ class DonsController
 
     protected function getEtatIdByName(string $name): ?int
     {
-        $stmt = $this->app->db()->prepare('SELECT id FROM etat WHERE LOWER(nom) = LOWER(?) LIMIT 1');
+        $stmt = $this->app->db()->prepare('SELECT id FROM BNGRC_etat WHERE LOWER(nom) = LOWER(?) LIMIT 1');
         $stmt->execute([$name]);
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $row !== false ? (int)$row['id'] : null;

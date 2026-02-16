@@ -1,5 +1,15 @@
 <?php
 
+// Routage pour le serveur intégré PHP (php -S localhost:8000 -t public public/index.php)
+if (php_sapi_name() === 'cli-server') {
+    $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    $file = __DIR__ . $uri;
+    // Si le fichier existe (CSS, JS, images…), laisser le serveur le servir directement
+    if ($uri !== '/' && is_file($file)) {
+        return false;
+    }
+}
+
 /*
  * FlightPHP Framework
  * @copyright   Copyright (c) 2024, Mike Cao <mike@mikecao.com>, n0nag0n <n0nag0n@sky-9.com>

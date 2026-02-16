@@ -9,12 +9,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Insérer Dons - BNGRC</title>
     <!-- Stylesheets (same stack as home) -->
-    <link rel="stylesheet" href="/assets/css/theme.css">
-    <link rel="stylesheet" href="/assets/css/layout.css">
-    <link rel="stylesheet" href="/assets/css/forms.css">
-    <link rel="stylesheet" href="/assets/css/buttons.css">
-    <link rel="stylesheet" href="/assets/css/dons.css">
-    <link rel="stylesheet" href="/assets/css/bootstrap-icons.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/theme.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/layout.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/forms.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/buttons.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/dons.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/bootstrap-icons.css">
 </head>
 
 <body>

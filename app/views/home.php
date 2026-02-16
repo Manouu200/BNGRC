@@ -9,11 +9,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Insérer Besoins - BNGRC</title>
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="/assets/css/theme.css">
-    <link rel="stylesheet" href="/assets/css/layout.css">
-    <link rel="stylesheet" href="/assets/css/forms.css">
-    <link rel="stylesheet" href="/assets/css/buttons.css">
-    <link rel="stylesheet" href="/assets/css/home.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/theme.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/layout.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/forms.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/buttons.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/home.css">
 </head>
 
 <body>
@@ -39,8 +39,7 @@
                     <div class="form-section-home">
                         <h2 class="form-title">💼 Détails du Besoin</h2>
 
-                        <form method="post" action="/sinistre/create" class="form-cont
-                        <form method=" post" action="/sinistre/create" class="form-container" style="padding: 0; box-shadow: none; border: none; background: transparent;">
+                        <form method="post" action="<?php echo BASE_URL; ?>/sinistre/create" class="form-container" style="padding: 0; box-shadow: none; border: none; background: transparent;">
                             <!-- First Row -->
                             <div class="form-grid">
                                 <div class="form-group-wrapper">

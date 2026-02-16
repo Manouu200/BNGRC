@@ -59,7 +59,7 @@ require('routes.php');
 
 // At this point, your app should have all the instructions it needs and it'll
 // "start" processing everything. This is where the magic happens.
-define('BASE_URL', rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'));
+define('BASE_URL', rtrim($app->get('flight.base_url'), '/'));
 
 $app->start();
 /*

@@ -45,7 +45,7 @@ class HomeController
     public function createSinistre()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->app->redirect('/');
+            $this->app->redirect(BASE_URL . '/');
             return;
         }
 
@@ -74,15 +74,15 @@ class HomeController
 
         // Simple validation
         if ($id_besoin <= 0 || $id_ville <= 0 || $id_unite <= 0 || $libellee === '') {
-            $this->app->redirect('/?created=0');
+            $this->app->redirect(BASE_URL . '/?created=0');
             return;
         }
 
         try {
             $this->sinistreModel->insert($id_besoin, $libellee, $id_ville, $quantite, $id_unite, $date);
-            $this->app->redirect('/?created=1');
+            $this->app->redirect(BASE_URL . '/?created=1');
         } catch (\Throwable $e) {
-            $this->app->redirect('/?created=0');
+            $this->app->redirect(BASE_URL . '/?created=0');
         }
     }
 }

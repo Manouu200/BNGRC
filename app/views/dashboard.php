@@ -9,12 +9,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tableau de Bord - BNGRC</title>
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="/assets/css/theme.css">
-    <link rel="stylesheet" href="/assets/css/layout.css">
-    <link rel="stylesheet" href="/assets/css/forms.css">
-    <link rel="stylesheet" href="/assets/css/buttons.css">
-    <link rel="stylesheet" href="/assets/css/tables.css">
-    <link rel="stylesheet" href="/assets/css/dashboard.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/theme.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/layout.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/forms.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/buttons.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/tables.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/dashboard.css">
 </head>
 
 <body>
@@ -31,7 +31,7 @@
                             <p class="page-subtitle">Consultez tous les besoins enregistrés</p>
                         </div>
                         <div class="dashboard-actions">
-                            <a href="/" class="btn btn-primary">
+                            <a href="<?php echo BASE_URL; ?>/" class="btn btn-primary">
                                 <span>➕</span> Ajouter un Besoin
                             </a>
                         </div>
@@ -240,7 +240,7 @@
                                 <div class="empty-state">
                                     <div class="empty-state-icon">📭</div>
                                     <div class="empty-state-title">Aucun besoin enregistré</div>
-                                    <div class="empty-state-message">Commencez par <a href="/">ajouter un nouveau besoin</a></div>
+                                    <div class="empty-state-message">Commencez par <a href="<?php echo BASE_URL; ?>/">ajouter un nouveau besoin</a></div>
                                 </div>
                             <?php endif; ?>
                         </div>

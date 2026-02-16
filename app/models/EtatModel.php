@@ -15,14 +15,14 @@ class EtatModel
 
     public function get(): array
     {
-        $sql = "SELECT id, nom FROM etat ORDER BY id";
+        $sql = "SELECT id, nom FROM BNGRC_etat ORDER BY id";
         $stmt = $this->db->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getById(int $id): ?array
     {
-        $sql = "SELECT id, nom FROM etat WHERE id = ?";
+        $sql = "SELECT id, nom FROM BNGRC_etat WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -31,7 +31,7 @@ class EtatModel
 
     public function insert(string $nom): int
     {
-        $sql = "INSERT INTO etat (nom) VALUES (?)";
+        $sql = "INSERT INTO BNGRC_etat (nom) VALUES (?)";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$nom]);
         return (int)$this->db->lastInsertId();
@@ -39,7 +39,7 @@ class EtatModel
 
     public function update(int $id, string $nom): bool
     {
-        $sql = "UPDATE etat SET nom = ? WHERE id = ?";
+        $sql = "UPDATE BNGRC_etat SET nom = ? WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$nom, $id]);
         return $stmt->rowCount() > 0;
@@ -47,7 +47,7 @@ class EtatModel
 
     public function delete(int $id): bool
     {
-        $sql = "DELETE FROM etat WHERE id = ?";
+        $sql = "DELETE FROM BNGRC_etat WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id]);
         return $stmt->rowCount() > 0;
