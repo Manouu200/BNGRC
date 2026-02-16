@@ -40,7 +40,7 @@ class AchatModel
     public function getAll(): array
     {
         $sql = "SELECT a.id, a.id_objet, a.date, o.libellee AS objet, b.nom AS besoin, u.nom AS unite,
-                o.prix_unitaire AS prix_unitaire, v.nom AS ville
+            o.prix_unitaire AS prix_unitaire, s.id_ville AS id_ville, v.nom AS ville
             FROM BNGRC_achat a
             JOIN BNGRC_objet o ON a.id_objet = o.id
             JOIN BNGRC_besoins b ON o.id_besoins = b.id
