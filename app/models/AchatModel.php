@@ -39,11 +39,14 @@ class AchatModel
      */
     public function getAll(): array
     {
-        $sql = "SELECT a.id, a.id_objet, a.date, o.libellee AS objet, b.nom AS besoin, u.nom AS unite, o.prix_unitaire AS prix_unitaire
+        $sql = "SELECT a.id, a.id_objet, a.date, o.libellee AS objet, b.nom AS besoin, u.nom AS unite,
+                o.prix_unitaire AS prix_unitaire, v.nom AS ville
             FROM BNGRC_achat a
             JOIN BNGRC_objet o ON a.id_objet = o.id
             JOIN BNGRC_besoins b ON o.id_besoins = b.id
             JOIN BNGRC_unite u ON o.id_unite = u.id
+            LEFT JOIN BNGRC_sinistre s ON s.id_objet = o.id
+            LEFT JOIN BNGRC_ville v ON v.id = s.id_ville
             ORDER BY a.date DESC";
         $stmt = $this->db->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

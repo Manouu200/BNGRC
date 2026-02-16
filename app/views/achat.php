@@ -13,6 +13,25 @@
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/layout.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/dashboard.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/buttons.css">
+    <style>
+        /* Bordures pour les tableaux de la page Achat */
+        .card-body .table.table-sm {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .card-body .table.table-sm th,
+        .card-body .table.table-sm td {
+            border: 1px solid #d5dce5;
+            padding: 0.45rem;
+            vertical-align: middle;
+        }
+
+        /* Assure que la table responsive garde le scroll si nécessaire */
+        .table-responsive {
+            overflow: auto;
+        }
+    </style>
 </head>
 
 <body>
@@ -23,126 +42,134 @@
                 <div class="achat-page">
                     <div class="page-header">
                         <h1 class="page-title">🛒 Achat</h1>
-                        <p class="page-subtitle">Total d'argent obtenu via les dons</p>
+                        <div style="width:100%; height:1px; background:linear-gradient(90deg, #0d6efd, #6cb2eb); margin-top:0.5rem;"></div>
                     </div>
 
-                    <div class="card" style="max-width:600px; margin:1.5rem auto; text-align:center;">
-                        <div class="card-body achat-total-card" data-total-argent="<?php echo htmlspecialchars((string)($totalArgent ?? 0), ENT_QUOTES); ?>">
-                            <h2 id="achat-total-value" style="margin:0; font-size:2.25rem;">
-                                <?php
-                                $total = isset($totalArgent) ? (float)$totalArgent : 0.0;
-                                echo number_format($total, 2, ',', ' ');
-                                ?>
-                                <span style="font-size:0.9rem; opacity:0.85;">Ar</span>
-                            </h2>
-                            <p style="margin-top:0.5rem; color:var(--muted);">Somme des dons dont le type de besoin est « Argent »</p>
+                    <div class="card" style="max-width:1400px; width:95%; margin:1.5rem auto;">
+                        <div class="card-body" style="padding:1.75rem;">
+                            <table style="width:100%; border:1px solid #d5dce5; border-collapse:separate; border-spacing:1.5rem;">
+                                <tr>
+                                    <td colspan="2" style="text-align:center;">
+                                        <div class="achat-total-card" data-total-argent="<?php echo htmlspecialchars((string)($totalArgent ?? 0), ENT_QUOTES); ?>">
+                                            <h2 id="achat-total-value" style="margin:0; font-size:2.25rem;">
+                                                <?php
+                                                $total = isset($totalArgent) ? (float)$totalArgent : 0.0;
+                                                echo number_format($total, 2, ',', ' ');
+                                                ?>
+                                                <span style="font-size:0.9rem; opacity:0.85;">Ar</span>
+                                            </h2>
+                                            <p style="margin-top:0.5rem; color:var(--muted);">Somme des dons</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="vertical-align:top; width:50%;">
+                                        <h3 style="margin-top:0;">Saisie – besoins à acheter</h3>
+                                        <div class="table-responsive" style="margin-top:0.75rem;">
+                                            <?php if (!empty($sinistresNonArgent) && is_array($sinistresNonArgent)): ?>
+                                                <table class="table table-sm" style="border:1px solid #d5dce5; min-width:100%;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Ville</th>
+                                                            <th>Besoin</th>
+                                                            <th>Objet</th>
+                                                            <th>Quantité</th>
+                                                            <th>Unité</th>
+                                                            <th>Prix unitaire</th>
+                                                            <th>Date</th>
+                                                            <th>État</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php foreach ($sinistresNonArgent as $s): ?>
+                                                            <tr>
+                                                                <td><?php echo htmlspecialchars($s['ville'] ?? ''); ?></td>
+                                                                <td><?php echo htmlspecialchars($s['besoin'] ?? ''); ?></td>
+                                                                <td><?php echo htmlspecialchars($s['libellee'] ?? ''); ?></td>
+                                                                <td><?php echo htmlspecialchars((string)($s['quantite'] ?? '0')); ?></td>
+                                                                <td><?php echo htmlspecialchars($s['unite'] ?? ''); ?></td>
+                                                                <td>
+                                                                    <?php
+                                                                    if (isset($s['prix_unitaire']) && $s['prix_unitaire'] !== null && $s['prix_unitaire'] !== '') {
+                                                                        echo number_format((float)$s['prix_unitaire'], 2, ',', ' ') . ' Ar';
+                                                                    } else {
+                                                                        echo '—';
+                                                                    }
+                                                                    ?>
+                                                                </td>
+                                                                <td><?php echo htmlspecialchars($s['date'] ?? ''); ?></td>
+                                                                <td><?php echo htmlspecialchars($s['etat'] ?? ''); ?></td>
+                                                                <td>
+                                                                    <?php
+                                                                    $isPurchased = false;
+                                                                    if (!empty($purchasedObjetIds) && isset($s['id_objet'])) {
+                                                                        $isPurchased = in_array((int)$s['id_objet'], $purchasedObjetIds, true);
+                                                                    }
+                                                                    ?>
+                                                                    <button
+                                                                        type="button"
+                                                                        class="btn btn-sm btn-primary achat-btn"
+                                                                        data-id="<?php echo htmlspecialchars($s['id'] ?? ''); ?>"
+                                                                        data-objet="<?php echo htmlspecialchars($s['id_objet'] ?? ''); ?>"
+                                                                        data-prix="<?php echo htmlspecialchars($s['prix_unitaire'] ?? ''); ?>"
+                                                                        data-quantite="<?php echo htmlspecialchars($s['quantite'] ?? '0'); ?>"
+                                                                        <?php echo $isPurchased ? 'disabled' : ''; ?>><?php echo $isPurchased ? 'Acheté' : 'Acheter'; ?></button>
+                                                                </td>
+                                                            </tr>
+                                                        <?php endforeach; ?>
+                                                    </tbody>
+                                                </table>
+                                            <?php else: ?>
+                                                <p style="margin:0; font-style:italic; color:var(--muted);">Aucun besoin en attente.</p>
+                                            <?php endif; ?>
+                                        </div>
+                                    </td>
+                                    <td style="vertical-align:top; width:50%;">
+                                        <h3 style="margin-top:0;">Liste des achats (déjà payés)</h3>
+                                        <div class="table-responsive" style="margin-top:0.75rem;">
+                                            <?php if (!empty($achatList) && is_array($achatList)): ?>
+                                                <table class="table table-sm" style="border:1px solid #d5dce5; min-width:100%;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Ville</th>
+                                                            <th>Date</th>
+                                                            <th>Objet</th>
+                                                            <th>Besoin</th>
+                                                            <th>Unité</th>
+                                                            <th>Prix unitaire</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php foreach ($achatList as $achat): ?>
+                                                            <tr>
+                                                                <td><?php echo htmlspecialchars($achat['ville'] ?? ''); ?></td>
+                                                                <td><?php echo htmlspecialchars($achat['date'] ?? ''); ?></td>
+                                                                <td><?php echo htmlspecialchars($achat['objet'] ?? ''); ?></td>
+                                                                <td><?php echo htmlspecialchars($achat['besoin'] ?? ''); ?></td>
+                                                                <td><?php echo htmlspecialchars($achat['unite'] ?? ''); ?></td>
+                                                                <td>
+                                                                    <?php
+                                                                    if (isset($achat['prix_unitaire']) && $achat['prix_unitaire'] !== null && $achat['prix_unitaire'] !== '') {
+                                                                        echo number_format((float)$achat['prix_unitaire'], 2, ',', ' ') . ' Ar';
+                                                                    } else {
+                                                                        echo '—';
+                                                                    }
+                                                                    ?>
+                                                                </td>
+                                                            </tr>
+                                                        <?php endforeach; ?>
+                                                    </tbody>
+                                                </table>
+                                            <?php else: ?>
+                                                <p style="margin:0; font-style:italic; color:var(--muted);">Aucun achat enregistré.</p>
+                                            <?php endif; ?>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
-
-                    <?php if (!empty($sinistresNonArgent) && is_array($sinistresNonArgent)): ?>
-                        <div class="card" style="max-width:1100px; margin:1.5rem auto;">
-                            <div class="card-body">
-                                <h3 style="margin-top:0;">Saisie – besoins à acheter</h3>
-                                <div class="table-responsive" style="margin-top:0.75rem;">
-                                    <table class="table table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>Ville</th>
-                                                <th>Besoin</th>
-                                                <th>Objet</th>
-                                                <th>Quantité</th>
-                                                <th>Unité</th>
-                                                <th>Prix unitaire</th>
-                                                <th>Date</th>
-                                                <th>État</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php foreach ($sinistresNonArgent as $s): ?>
-                                                <tr>
-                                                    <td><?php echo htmlspecialchars($s['ville'] ?? ''); ?></td>
-                                                    <td><?php echo htmlspecialchars($s['besoin'] ?? ''); ?></td>
-                                                    <td><?php echo htmlspecialchars($s['libellee'] ?? ''); ?></td>
-                                                    <td><?php echo htmlspecialchars((string)($s['quantite'] ?? '0')); ?></td>
-                                                    <td><?php echo htmlspecialchars($s['unite'] ?? ''); ?></td>
-                                                    <td>
-                                                        <?php
-                                                        if (isset($s['prix_unitaire']) && $s['prix_unitaire'] !== null && $s['prix_unitaire'] !== '') {
-                                                            echo number_format((float)$s['prix_unitaire'], 2, ',', ' ') . ' Ar';
-                                                        } else {
-                                                            echo '—';
-                                                        }
-                                                        ?>
-                                                    </td>
-                                                    <td><?php echo htmlspecialchars($s['date'] ?? ''); ?></td>
-                                                    <td><?php echo htmlspecialchars($s['etat'] ?? ''); ?></td>
-                                                    <td>
-                                                        <?php
-                                                        $isPurchased = false;
-                                                        if (!empty($purchasedObjetIds) && isset($s['id_objet'])) {
-                                                            $isPurchased = in_array((int)$s['id_objet'], $purchasedObjetIds, true);
-                                                        }
-                                                        ?>
-                                                        <button
-                                                            type="button"
-                                                            class="btn btn-sm btn-primary achat-btn"
-                                                            data-id="<?php echo htmlspecialchars($s['id'] ?? ''); ?>"
-                                                            data-objet="<?php echo htmlspecialchars($s['id_objet'] ?? ''); ?>"
-                                                            data-prix="<?php echo htmlspecialchars($s['prix_unitaire'] ?? ''); ?>"
-                                                            data-quantite="<?php echo htmlspecialchars($s['quantite'] ?? '0'); ?>"
-                                                            <?php echo $isPurchased ? 'disabled' : ''; ?>><?php echo $isPurchased ? 'Acheté' : 'Acheter'; ?></button>
-                                                    </td>
-                                                </tr>
-                                            <?php endforeach; ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-
-                    <?php if (!empty($achatList) && is_array($achatList)): ?>
-                        <div class="card" style="max-width:900px; margin:1.5rem auto;">
-                            <div class="card-body">
-                                <h3 style="margin-top:0;">Liste des achats (déjà payés)</h3>
-                                <div class="table-responsive" style="margin-top:0.75rem;">
-                                    <table class="table table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Date</th>
-                                                <th>Objet</th>
-                                                <th>Besoin</th>
-                                                <th>Unité</th>
-                                                <th>Prix unitaire</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php foreach ($achatList as $achat): ?>
-                                                <tr>
-                                                    <td><?php echo htmlspecialchars($achat['id'] ?? ''); ?></td>
-                                                    <td><?php echo htmlspecialchars($achat['date'] ?? ''); ?></td>
-                                                    <td><?php echo htmlspecialchars($achat['objet'] ?? ''); ?></td>
-                                                    <td><?php echo htmlspecialchars($achat['besoin'] ?? ''); ?></td>
-                                                    <td><?php echo htmlspecialchars($achat['unite'] ?? ''); ?></td>
-                                                    <td>
-                                                        <?php
-                                                        if (isset($achat['prix_unitaire']) && $achat['prix_unitaire'] !== null && $achat['prix_unitaire'] !== '') {
-                                                            echo number_format((float)$achat['prix_unitaire'], 2, ',', ' ') . ' Ar';
-                                                        } else {
-                                                            echo '—';
-                                                        }
-                                                        ?>
-                                                    </td>
-                                                </tr>
-                                            <?php endforeach; ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endif; ?>
                 </div>
             </div>
 
