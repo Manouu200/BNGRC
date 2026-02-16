@@ -15,6 +15,13 @@ CREATE TABLE IF NOT EXISTS ville(
     id INT AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(255) NOT NULL
 );
+
+-- Table pour représenter l'état d'un besoin/don (insatisfait, satisfait)
+CREATE TABLE IF NOT EXISTS etat(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(255) NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS sinistre(
     id INT AUTO_INCREMENT PRIMARY KEY,
     id_besoins INT NOT NULL,
@@ -22,9 +29,12 @@ CREATE TABLE IF NOT EXISTS sinistre(
     id_ville INT NOT NULL,
     quantite INT NOT NULL,
     id_unite INT NOT NULL,
+    date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    id_etat INT NOT NULL DEFAULT 1,
     FOREIGN KEY (id_besoins) REFERENCES besoins(id),
     FOREIGN KEY (id_ville) REFERENCES ville(id),
-    FOREIGN KEY (id_unite) REFERENCES unite(id)
+    FOREIGN KEY (id_unite) REFERENCES unite(id),
+    FOREIGN KEY (id_etat) REFERENCES etat(id)
 );
 -- Table pour enregistrer les dons
 CREATE TABLE IF NOT EXISTS dons (
@@ -57,6 +67,11 @@ INSERT INTO ville (nom) VALUES
     ('Majunga'),
     ('Tamatave');
 
+-- Valeurs par défaut pour `etat`
+INSERT INTO etat (nom) VALUES
+    ('insatisfait'),
+    ('satisfait');
+
 -- Vue présentant les sinistres sans exposer les identifiants
 CREATE VIEW IF NOT EXISTS vue_sinistre AS
 SELECT
@@ -64,7 +79,9 @@ SELECT
     b.nom AS besoin,
     s.libellee AS libellee,
     s.quantite AS quantite,
-    u.nom AS unite
+    u.nom AS unite,
+    s.date AS date,
+    e.nom AS etat
 FROM sinistre s
 JOIN ville v ON s.id_ville = v.id
 JOIN besoins b ON s.id_besoins = b.id

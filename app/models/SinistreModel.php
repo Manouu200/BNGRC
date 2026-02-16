@@ -15,24 +15,26 @@ class SinistreModel
 
     public function get(): array
     {
-        $sql = "SELECT s.id, s.id_besoins, b.nom AS besoin, s.libellee, s.id_ville, v.nom AS ville, s.quantite, s.id_unite, u.nom AS unite
-                FROM sinistre s
-                JOIN besoins b ON s.id_besoins = b.id
-                JOIN ville v ON s.id_ville = v.id
-                JOIN unite u ON s.id_unite = u.id
-                ORDER BY s.id";
+        $sql = "SELECT s.id, s.id_besoins, b.nom AS besoin, s.libellee, s.id_ville, v.nom AS ville, s.quantite, s.id_unite, u.nom AS unite, s.date AS date, s.id_etat, e.nom AS etat
+            FROM sinistre s
+            JOIN besoins b ON s.id_besoins = b.id
+            JOIN ville v ON s.id_ville = v.id
+            JOIN unite u ON s.id_unite = u.id
+            JOIN etat e ON s.id_etat = e.id
+            ORDER BY s.id";
         $stmt = $this->db->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getById(int $id): ?array
     {
-        $sql = "SELECT s.id, s.id_besoins, b.nom AS besoin, s.libellee, s.id_ville, v.nom AS ville, s.quantite, s.id_unite, u.nom AS unite
-                FROM sinistre s
-                JOIN besoins b ON s.id_besoins = b.id
-                JOIN ville v ON s.id_ville = v.id
-                JOIN unite u ON s.id_unite = u.id
-                WHERE s.id = ? LIMIT 1";
+        $sql = "SELECT s.id, s.id_besoins, b.nom AS besoin, s.libellee, s.id_ville, v.nom AS ville, s.quantite, s.id_unite, u.nom AS unite, s.date AS date, s.id_etat, e.nom AS etat
+            FROM sinistre s
+            JOIN besoins b ON s.id_besoins = b.id
+            JOIN ville v ON s.id_ville = v.id
+            JOIN unite u ON s.id_unite = u.id
+            JOIN etat e ON s.id_etat = e.id
+            WHERE s.id = ? LIMIT 1";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);

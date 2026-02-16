@@ -131,6 +131,7 @@
                                             <th style="text-align: center;">📊 Quantité</th>
                                             <th>📏 Unité</th>
                                             <th>📅 Date</th>
+                                            <th>🔔 État</th>
                                             <th style="text-align: center;">⚙️ Actions</th>
                                         </tr>
                                     </thead>
@@ -200,7 +201,8 @@
                                             <th>📝 Libellé</th>
                                             <th style="text-align: center;">📊 Quantité</th>
                                             <th>📏 Unité</th>
-                                            <th style="text-align: center;">⚙️ Actions</th>
+                                            <th>📅 Date</th>
+                                            <th>⚙️ Etat</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -219,6 +221,12 @@
                                                     <strong><?php echo htmlspecialchars((string)($s['quantite'] ?? '')); ?></strong>
                                                 </td>
                                                 <td><?php echo htmlspecialchars($s['unite'] ?? ''); ?></td>
+                                                <td><?php echo htmlspecialchars($s['date'] ?? ''); ?></td>
+                                                <td>
+                                                    <span class="badge badge-info">
+                                                        <?php echo htmlspecialchars($s['etat'] ?? ''); ?>
+                                                    </span>
+                                                </td>
                                                 <td style="text-align: center;">
                                                     <div class="table-actions">
                                                         <button class="btn btn-sm btn-outline-primary" title="Voir les détails">👁️</button>
