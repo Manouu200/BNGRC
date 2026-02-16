@@ -1,0 +1,28 @@
+/* Minimal local icon CSS for used icons (bi-house, bi-search).
+   Uses inline SVG data URIs to avoid external font files. */
+.bi {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+  fill: currentColor;
+}
+.bi-house {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='currentColor' d='M8 .5l6 6V15a1 1 0 0 1-1 1h-3v-4H6v4H3a1 1 0 0 1-1-1V6.5l6-6z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 1em 1em;
+}
+.bi-search {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='currentColor' d='M11 6a5 5 0 1 1-10 0 5 5 0 0 1 10 0zM12.9 11.3l3.4 3.4-1.4 1.4-3.4-3.4A7 7 0 1 1 12.9 11.3z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 1em 1em;
+}
+
+.bi-bell {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='currentColor' d='M8 16a2 2 0 0 0 1.985-1.75H6.015A2 2 0 0 0 8 16zm6-5c0-3.07-1.64-5.64-4.5-6.32V4a1.5 1.5 0 1 0-3 0v.68C3.64 5.36 2 7.92 2 11v1l-1 1v1h14v-1l-1-1v-1z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 1em 1em;
+}
