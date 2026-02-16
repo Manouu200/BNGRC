@@ -78,7 +78,7 @@ $app->set('csp_nonce', $nonce);
 return [
 	'database' => [
 		'host'     => '127.0.0.1',
-		'dbname'   => 'takalo-takalo',
+		'dbname'   => 'BNGRC',      // change si besoin
 		'user'     => 'root',      // change si besoin
 		'password' => '',          // mot de passe MySQL
 	],

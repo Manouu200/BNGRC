@@ -15,8 +15,11 @@ use app\controllers\ExchangeController;
 
 // Affiche la page d'inscription à la racine
 $router->get('/', function () use ($app) {
-    $app->render('home.php');
+    $controller = new HomeController($app);
+    $controller->showHome();
 });
 
-// // Page d'accueil après connexion/inscription
-// $router->get('/home', [HomeController::class, 'showHome']);
+$router->post('/sinistre/create', function () use ($app) {
+    $controller = new HomeController($app);
+    $controller->createSinistre();
+});
