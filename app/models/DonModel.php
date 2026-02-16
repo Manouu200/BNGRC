@@ -39,6 +39,23 @@ class DonModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Retourne la liste des dons dont le besoin est 'Argent' (quantite représente un montant en Ariary).
+     * Les résultats sont ordonnés par id.
+     * @return array
+     */
+    public function getArgentDons(): array
+    {
+        $sql = "SELECT d.id, d.quantite
+            FROM BNGRC_dons d
+            JOIN BNGRC_objet o ON d.id_objet = o.id
+            JOIN BNGRC_besoins b ON o.id_besoins = b.id
+            WHERE LOWER(b.nom) = 'argent'
+            ORDER BY d.id";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getById(int $id): ?array
     {
         $sql = "SELECT d.id, v.nom AS ville, b.nom AS besoin, o.libellee, d.quantite, u.nom AS unite, d.date
@@ -96,5 +113,27 @@ class DonModel
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$quantite, $id]);
         return $stmt->rowCount() > 0;
+    }
+
+    /**
+     * Retourne la somme des quantités pour les dons dont le besoin est 'Argent'.
+     * La comparaison sur le nom du besoin est insensible à la casse.
+     * Retourne 0 si aucun don correspondant.
+     *
+     * @return float
+     */
+    public function getTotalArgent(): float
+    {
+        $sql = "SELECT SUM(d.quantite) AS total
+            FROM BNGRC_dons d
+            JOIN BNGRC_objet o ON d.id_objet = o.id
+            JOIN BNGRC_besoins b ON o.id_besoins = b.id
+            WHERE LOWER(b.nom) = 'argent'";
+        $stmt = $this->db->query($sql);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row === false || $row['total'] === null) {
+            return 0.0;
+        }
+        return (float)$row['total'];
     }
 }

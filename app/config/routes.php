@@ -34,6 +34,16 @@ $router->get('/dons', function () use ($app) {
     $controller->showForm();
 });
 
+$router->get('/achat', function () use ($app) {
+    $controller = new \app\controllers\AchatController($app);
+    $controller->showAchat();
+});
+
+$router->post('/achat/buy', function () use ($app) {
+    $controller = new \app\controllers\AchatController($app);
+    $controller->buy();
+});
+
 $router->post('/dons/create', function () use ($app) {
     $controller = new \app\controllers\DonsController($app);
     $controller->createDon();

@@ -36,8 +36,13 @@ $currentPage = basename($_SERVER['REQUEST_URI'], '?');
                     <span class="nav-label">Inserer dons</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="<?php echo BASE_URL; ?>/achat" class="nav-link <?php echo strpos($currentPage, 'achat') !== false ? 'active' : ''; ?>">
+                    <span class="nav-icon">🛒</span>
+                    <span class="nav-label">Achat</span>
+                </a>
+            </li>
         </ul>
 
-        <!-- <hr style="border-color: rgba(255, 255, 255, 0.1); margin: 2rem 1rem;"> -->
     </div>
 </div>

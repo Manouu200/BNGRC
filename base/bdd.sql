@@ -54,6 +54,14 @@ CREATE TABLE IF NOT EXISTS BNGRC_dons (
     FOREIGN KEY (id_objet) REFERENCES BNGRC_objet(id)
 );
 
+-- Table pour enregistrer les achats (réalisés à partir des dons 'Argent')
+CREATE TABLE IF NOT EXISTS BNGRC_achat (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_objet INT NOT NULL,
+    date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_objet) REFERENCES BNGRC_objet(id)
+);
+
 -- Données de base réalistes
 INSERT INTO BNGRC_besoins (nom) VALUES
     ('nature'),

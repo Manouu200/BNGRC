@@ -15,7 +15,7 @@ class SinistreModel
 
     public function get(): array
     {
-        $sql = "SELECT s.id, s.id_objet, o.libellee, o.id_besoins, b.nom AS besoin, s.id_ville, v.nom AS ville, s.quantite, o.id_unite AS id_unite, u.nom AS unite, s.date AS date, s.id_etat, e.nom AS etat
+        $sql = "SELECT s.id, s.id_objet, o.libellee, o.id_besoins, b.nom AS besoin, s.id_ville, v.nom AS ville, s.quantite, o.id_unite AS id_unite, u.nom AS unite, o.prix_unitaire AS prix_unitaire, s.date AS date, s.id_etat, e.nom AS etat
             FROM BNGRC_sinistre s
             JOIN BNGRC_objet o ON s.id_objet = o.id
             JOIN BNGRC_besoins b ON o.id_besoins = b.id
@@ -29,7 +29,7 @@ class SinistreModel
 
     public function getById(int $id): ?array
     {
-        $sql = "SELECT s.id, s.id_objet, o.libellee, o.id_besoins, b.nom AS besoin, s.id_ville, v.nom AS ville, s.quantite, o.id_unite AS id_unite, u.nom AS unite, s.date AS date, s.id_etat, e.nom AS etat
+        $sql = "SELECT s.id, s.id_objet, o.libellee, o.id_besoins, b.nom AS besoin, s.id_ville, v.nom AS ville, s.quantite, o.id_unite AS id_unite, u.nom AS unite, o.prix_unitaire AS prix_unitaire, s.date AS date, s.id_etat, e.nom AS etat
             FROM BNGRC_sinistre s
             JOIN BNGRC_objet o ON s.id_objet = o.id
             JOIN BNGRC_besoins b ON o.id_besoins = b.id
