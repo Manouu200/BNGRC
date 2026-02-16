@@ -25,6 +25,18 @@ class DonModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getForDispatch(): array
+    {
+        $sql = "SELECT d.id, d.libellee, d.quantite, v.nom AS ville, b.nom AS besoin, u.nom AS unite
+                FROM dons d
+                JOIN ville v ON d.id_ville = v.id
+                JOIN besoins b ON d.id_besoins = b.id
+                JOIN unite u ON d.id_unite = u.id
+                ORDER BY d.id";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getById(int $id): ?array
     {
         $sql = "SELECT d.id, v.nom AS ville, b.nom AS besoin, d.libellee, d.quantite, u.nom AS unite, d.date
@@ -66,6 +78,14 @@ class DonModel
         $sql = "DELETE FROM dons WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id]);
+        return $stmt->rowCount() > 0;
+    }
+
+    public function updateQuantite(int $id, int $quantite): bool
+    {
+        $sql = "UPDATE dons SET quantite = ? WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$quantite, $id]);
         return $stmt->rowCount() > 0;
     }
 }

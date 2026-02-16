@@ -131,8 +131,7 @@
                                             <th style="text-align: center;">📊 Quantité</th>
                                             <th>📏 Unité</th>
                                             <th>📅 Date</th>
-                                            <th>🔔 État</th>
-                                            <th style="text-align: center;">⚙️ Actions</th>
+
                                         </tr>
                                     </thead>
                                     <tbody>

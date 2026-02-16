@@ -21,7 +21,7 @@ class SinistreModel
             JOIN ville v ON s.id_ville = v.id
             JOIN unite u ON s.id_unite = u.id
             JOIN etat e ON s.id_etat = e.id
-            ORDER BY s.id";
+            ORDER BY s.date ASC, s.id ASC";
         $stmt = $this->db->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -41,11 +41,18 @@ class SinistreModel
         return $row === false ? null : $row;
     }
 
-    public function insert(int $id_besoins, string $libellee, int $id_ville, int $quantite, int $id_unite): int
+    public function insert(int $id_besoins, string $libellee, int $id_ville, int $quantite, int $id_unite, ?string $date = null): int
     {
-        $sql = "INSERT INTO sinistre (id_besoins, libellee, id_ville, quantite, id_unite) VALUES (?, ?, ?, ?, ?)";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$id_besoins, $libellee, $id_ville, $quantite, $id_unite]);
+        if ($date !== null) {
+            $sql = "INSERT INTO sinistre (id_besoins, libellee, id_ville, quantite, id_unite, date) VALUES (?, ?, ?, ?, ?, ?)";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$id_besoins, $libellee, $id_ville, $quantite, $id_unite, $date]);
+        } else {
+            $sql = "INSERT INTO sinistre (id_besoins, libellee, id_ville, quantite, id_unite) VALUES (?, ?, ?, ?, ?)";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$id_besoins, $libellee, $id_ville, $quantite, $id_unite]);
+        }
+
         return (int)$this->db->lastInsertId();
     }
 
@@ -62,6 +69,23 @@ class SinistreModel
         $sql = "DELETE FROM sinistre WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id]);
+        return $stmt->rowCount() > 0;
+    }
+
+    public function updateQuantiteEtat(int $id, int $quantite, ?int $id_etat = null): bool
+    {
+        $fields = ['quantite = ?'];
+        $params = [$quantite];
+
+        if ($id_etat !== null) {
+            $fields[] = 'id_etat = ?';
+            $params[] = $id_etat;
+        }
+
+        $params[] = $id;
+        $sql = 'UPDATE sinistre SET ' . implode(', ', $fields) . ' WHERE id = ?';
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
         return $stmt->rowCount() > 0;
     }
 }

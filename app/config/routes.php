@@ -38,3 +38,8 @@ $router->post('/dons/create', function () use ($app) {
     $controller = new \app\controllers\DonsController($app);
     $controller->createDon();
 });
+
+$router->post('/dons/dispatch', function () use ($app) {
+    $controller = new \app\controllers\DonsController($app);
+    $controller->dispatchDons();
+});

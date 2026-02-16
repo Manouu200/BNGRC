@@ -3,6 +3,7 @@
 ?>
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,10 +15,11 @@
     <link rel="stylesheet" href="/assets/css/buttons.css">
     <link rel="stylesheet" href="/assets/css/home.css">
 </head>
+
 <body>
     <div class="container-main">
         <?php include __DIR__ . '/templates/sidebar.php'; ?>
-        
+
         <div class="main-content">
             <div class="page-wrapper">
                 <div class="home-page">
@@ -36,8 +38,9 @@
                     <!-- Form Section -->
                     <div class="form-section-home">
                         <h2 class="form-title">💼 Détails du Besoin</h2>
-                        
-                        <form method="post" action="/sinistre/create" class="form-container" style="padding: 0; box-shadow: none; border: none; background: transparent;">
+
+                        <form method="post" action="/sinistre/create" class="form-cont
+                        <form method=" post" action="/sinistre/create" class="form-container" style="padding: 0; box-shadow: none; border: none; background: transparent;">
                             <!-- First Row -->
                             <div class="form-grid">
                                 <div class="form-group-wrapper">
@@ -84,7 +87,6 @@
                                     <label class="form-label required">Quantité</label>
                                     <input type="number" name="quantite" class="form-control" placeholder="Ex: 200" value="200" min="0" step="0.01" required>
                                 </div>
-
                                 <div class="form-group-wrapper">
                                     <label class="form-label required">Unité</label>
                                     <?php if (!empty($unites) && is_array($unites)): ?>
@@ -99,6 +101,11 @@
                                     <?php else: ?>
                                         <input type="text" name="unite" class="form-control" placeholder="Unité" value="Litre">
                                     <?php endif; ?>
+                                </div>
+
+                                <div class="form-group-wrapper">
+                                    <label class="form-label">Date</label>
+                                    <input type="datetime-local" name="date" class="form-control" value="<?php echo date('Y-m-d\TH:i'); ?>">
                                 </div>
                             </div>
 
@@ -130,9 +137,10 @@
                     </div>
                 </div>
             </div>
-            
+
             <?php include __DIR__ . '/templates/footer.php'; ?>
         </div>
     </div>
 </body>
+
 </html>

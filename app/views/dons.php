@@ -36,6 +36,53 @@
                         <?php endif; ?>
                     <?php endif; ?>
 
+                    <?php if (!empty($dispatchStatus)): ?>
+                        <?php if ($dispatchStatus === 'success'): ?>
+                            <div class="alert alert-info">
+                                <strong>Résultats du dispatch</strong>
+                                <?php if (!empty($dispatchResults)): ?>
+                                    <div class="table-responsive" style="margin-top: 0.75rem;">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Don (libellé)</th>
+                                                    <th>Besoin (libellé)</th>
+                                                    <th>Quantité transférée</th>
+                                                    <th>Reste don</th>
+                                                    <th>Reste besoin</th>
+                                                    <th>État besoin</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php foreach ($dispatchResults as $item): ?>
+                                                    <tr>
+                                                        <td><?php echo htmlspecialchars($item['don']['libellee'] ?? ''); ?> (<?php echo htmlspecialchars($item['don']['ville'] ?? ''); ?>)</td>
+                                                        <td><?php echo htmlspecialchars($item['sinistre']['libellee'] ?? ''); ?> (<?php echo htmlspecialchars($item['sinistre']['ville'] ?? ''); ?>)</td>
+                                                        <td><strong><?php echo htmlspecialchars((string)($item['dispatched'] ?? '0')); ?> <?php echo htmlspecialchars($item['don']['unite'] ?? ''); ?></strong></td>
+                                                        <td><?php echo htmlspecialchars((string)($item['don']['quantite_apres'] ?? '0')); ?></td>
+                                                        <td><?php echo htmlspecialchars((string)($item['sinistre']['quantite_apres'] ?? '0')); ?></td>
+                                                        <td><?php echo htmlspecialchars($item['sinistre']['etat'] ?? ''); ?></td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        <?php elseif ($dispatchStatus === 'no-match'): ?>
+                            <div class="alert alert-warning">Aucun libellé identique n'a été trouvé entre les dons et les besoins.</div>
+                        <?php elseif ($dispatchStatus === 'no-data'): ?>
+                            <div class="alert alert-warning">Impossible de dispatcher : la liste des dons ou des besoins est vide.</div>
+                        <?php elseif ($dispatchStatus === 'error'): ?>
+                            <div class="alert alert-danger">
+                                Une erreur est survenue pendant le dispatch.
+                                <?php if (!empty($dispatchError)): ?>
+                                    <br><small><?php echo htmlspecialchars($dispatchError); ?></small>
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
+                    <?php endif; ?>
+
                     <div class="form-section-dons">
                         <h2 class="form-title">🧾 Détails du don</h2>
 
@@ -103,6 +150,16 @@
 
                             <div class="submit-button-wrapper">
                                 <button type="reset" class="btn btn-outline-secondary">🔄 Réinitialiser</button>
+                                <button
+                                    type="submit"
+                                    id="btn-dispatch-dons"
+                                    class="btn btn-outline-primary"
+                                    title="Distribuer les dons vers les besoins correspondants"
+                                    formaction="<?php echo BASE_URL; ?>/dons/dispatch"
+                                    formmethod="post"
+                                    formnovalidate>
+                                    ⤴ Dispatcher les dons
+                                </button>
                                 <button type="submit" class="btn btn-primary">✓ Enregistrer le don</button>
                             </div>
                         </form>

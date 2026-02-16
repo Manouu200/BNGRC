@@ -54,6 +54,23 @@ class HomeController
         $id_ville = isset($_POST['ville']) ? (int)$_POST['ville'] : 0;
         $quantite = isset($_POST['quantite']) ? (int)$_POST['quantite'] : 0;
         $id_unite = isset($_POST['unite']) ? (int)$_POST['unite'] : 0;
+        $dateRaw = isset($_POST['date']) ? trim((string)$_POST['date']) : '';
+
+        // Normalize datetime-local (YYYY-MM-DDTHH:MM) to MySQL DATETIME (YYYY-MM-DD HH:MM:SS)
+        $date = null;
+        if ($dateRaw !== '') {
+            $date = str_replace('T', ' ', $dateRaw);
+            // if seconds missing, append :00
+            if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $date)) {
+                $date .= ':00';
+            }
+            try {
+                $dt = new \DateTime($date);
+                $date = $dt->format('Y-m-d H:i:s');
+            } catch (\Throwable $e) {
+                $date = null;
+            }
+        }
 
         // Simple validation
         if ($id_besoin <= 0 || $id_ville <= 0 || $id_unite <= 0 || $libellee === '') {
@@ -62,7 +79,7 @@ class HomeController
         }
 
         try {
-            $this->sinistreModel->insert($id_besoin, $libellee, $id_ville, $quantite, $id_unite);
+            $this->sinistreModel->insert($id_besoin, $libellee, $id_ville, $quantite, $id_unite, $date);
             $this->app->redirect('/?created=1');
         } catch (\Throwable $e) {
             $this->app->redirect('/?created=0');
