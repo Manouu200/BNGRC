@@ -92,18 +92,42 @@
                     <?php endif; ?>
 
                     <!-- Boutons d'action -->
-                    <div class="simulation-actions">
-                        <form method="POST" action="<?php echo BASE_URL; ?>/simulation/simulate" style="display:inline;">
+                    <div class="simulation-actions" style="flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                            <label style="font-weight: 500;">Priorité :</label>
+                            <select id="prioritySelect" style="padding: 0.5rem 1rem; border-radius: 4px; border: 1px solid #ccc; font-size: 1rem;">
+                                <option value="quantite">🔢 Plus petite quantité d'abord</option>
+                                <option value="date">📅 Plus ancienne date d'abord</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; gap: 1rem;">
+                        <form method="POST" action="<?php echo BASE_URL; ?>/simulation/simulate" style="display:inline;" id="simulateForm">
+                            <input type="hidden" name="priority" id="simulatePriority" value="quantite">
                             <button type="submit" class="btn btn-primary" style="padding: 0.75rem 2rem; font-size: 1.1rem;">
                                 🔍 Simuler
                             </button>
                         </form>
-                        <form method="POST" action="<?php echo BASE_URL; ?>/simulation/validate" style="display:inline;">
+                        <form method="POST" action="<?php echo BASE_URL; ?>/simulation/validate" style="display:inline;" id="validateForm">
+                            <input type="hidden" name="priority" id="validatePriority" value="quantite">
                             <button type="submit" class="btn btn-success" style="padding: 0.75rem 2rem; font-size: 1.1rem; background: #28a745; border-color: #28a745;">
                                 ✅ Valider
                             </button>
                         </form>
+                        </div>
                     </div>
+
+                    <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var prioritySelect = document.getElementById('prioritySelect');
+                        var simulatePriority = document.getElementById('simulatePriority');
+                        var validatePriority = document.getElementById('validatePriority');
+                        
+                        prioritySelect.addEventListener('change', function() {
+                            simulatePriority.value = this.value;
+                            validatePriority.value = this.value;
+                        });
+                    });
+                    </script>
 
                     <!-- Résultats de simulation -->
                     <?php if (!empty($simulationResults) && is_array($simulationResults)): ?>
@@ -236,7 +260,8 @@
                             <h3 style="margin-top:0;">📖 Règles de gestion</h3>
                             <ul style="margin:0.5rem 0; padding-left:1.5rem; line-height:1.8;">
                                 <li><strong>Correspondance par libellé :</strong> Un don est dispatché vers un besoin ayant le même libellé d'objet.</li>
-                                <li><strong>Priorité par date :</strong> Les besoins les plus anciens sont servis en premier.</li>
+                                <li><strong>Priorité par quantité :</strong> Les besoins avec la plus petite quantité sont servis en premier (par défaut).</li>
+                                <li><strong>Priorité par date :</strong> Optionnellement, les besoins les plus anciens peuvent être servis en premier.</li>
                                 <li><strong>Mise à jour des états :</strong> Un besoin dont la quantité atteint 0 passe à l'état "satisfait".</li>
                                 <li><strong>Exclusion Argent :</strong> Les dons/besoins de type "Argent" sont traités via la page Achat.</li>
                             </ul>

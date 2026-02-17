@@ -144,14 +144,28 @@ class SimulationController
                 return $besoin !== 'argent' && (int)($s['quantite'] ?? 0) > 0;
             });
 
-            // Trier les sinistres par date (plus ancien d'abord = priorité)
-            usort($sinistres, function ($a, $b) {
-                $dateA = isset($a['date']) ? strtotime($a['date']) : 0;
-                $dateB = isset($b['date']) ? strtotime($b['date']) : 0;
-                if ($dateA === $dateB) {
-                    return ($a['id'] ?? 0) <=> ($b['id'] ?? 0);
+            // Récupérer le critère de priorité (quantite ou date)
+            $priority = isset($_POST['priority']) ? $_POST['priority'] : 'quantite';
+
+            // Trier les sinistres selon le critère de priorité
+            usort($sinistres, function ($a, $b) use ($priority) {
+                if ($priority === 'quantite') {
+                    // Priorité aux besoins avec la plus petite quantité
+                    $qtyA = (int)($a['quantite'] ?? 0);
+                    $qtyB = (int)($b['quantite'] ?? 0);
+                    if ($qtyA === $qtyB) {
+                        return ($a['id'] ?? 0) <=> ($b['id'] ?? 0);
+                    }
+                    return $qtyA <=> $qtyB;
+                } else {
+                    // Priorité aux besoins les plus anciens (par date)
+                    $dateA = isset($a['date']) ? strtotime($a['date']) : 0;
+                    $dateB = isset($b['date']) ? strtotime($b['date']) : 0;
+                    if ($dateA === $dateB) {
+                        return ($a['id'] ?? 0) <=> ($b['id'] ?? 0);
+                    }
+                    return $dateA <=> $dateB;
                 }
-                return $dateA <=> $dateB;
             });
 
             if (empty($dons) || empty($sinistres)) {
