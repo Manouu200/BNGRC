@@ -153,7 +153,8 @@
                                             <th style="text-align: center;">📊 Quantité</th>
                                             <th>📏 Unité</th>
                                             <th style="text-align: right;">💰 Prix Total</th>
-                                            <th>📅 Date</th>
+                                            <th>� Ordre</th>
+                                            <th>�📅 Date</th>
                                             <th style="text-align: center;">État</th>
                                         </tr>
                                     </thead>
@@ -177,6 +178,7 @@
                                                         echo $prixTotal > 0 ? number_format($prixTotal, 2, ',', ' ') . ' Ar' : '—';
                                                     ?>
                                                 </td>
+                                                <td><?php echo htmlspecialchars((string)($b['ordre'] ?? '0')); ?></td>
                                                 <td><?php echo htmlspecialchars($b['date'] ?? ''); ?></td>
                                                 <td style="text-align: center;">
                                                     <span class="<?php echo ($b['etat'] ?? '') === 'satisfait' ? 'badge-satisfait' : 'badge-insatisfait'; ?>">

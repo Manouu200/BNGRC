@@ -267,6 +267,7 @@
                                             <th>📋 Type de Besoin</th>
                                             <th>📝 Libellé</th>
                                             <th style="text-align: center;">📊 Quantité</th>
+                                            <th style="text-align: center;">🔢 Ordre</th>
                                             <th>📏 Unité</th>
                                             <th style="text-align: right;">💰 Prix Total</th>
                                             <th>📅 Date</th>
@@ -288,6 +289,9 @@
                                                 <td><?php echo htmlspecialchars($s['libellee'] ?? ''); ?></td>
                                                 <td style="text-align: center;">
                                                     <strong><?php echo htmlspecialchars((string)($s['quantite'] ?? '')); ?></strong>
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    <?php echo htmlspecialchars((string)($s['ordre'] ?? '0')); ?>
                                                 </td>
                                                 <td><?php echo htmlspecialchars($s['unite'] ?? ''); ?></td>
                                                 <td style="text-align: right; font-weight: 600; color: #2e7d32;">

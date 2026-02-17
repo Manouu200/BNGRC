@@ -15,21 +15,21 @@ class SinistreModel
 
     public function get(): array
     {
-        $sql = "SELECT s.id, s.id_objet, o.libellee, o.id_besoins, b.nom AS besoin, s.id_ville, v.nom AS ville, s.quantite, s.quantite_initiale, o.id_unite AS id_unite, u.nom AS unite, o.prix_unitaire AS prix_unitaire, s.date AS date, s.id_etat, e.nom AS etat
+        $sql = "SELECT s.id, s.id_objet, o.libellee, o.id_besoins, b.nom AS besoin, s.id_ville, v.nom AS ville, s.quantite, s.ordre, s.quantite_initiale, o.id_unite AS id_unite, u.nom AS unite, o.prix_unitaire AS prix_unitaire, s.date AS date, s.id_etat, e.nom AS etat
             FROM BNGRC_sinistre s
             JOIN BNGRC_objet o ON s.id_objet = o.id
             JOIN BNGRC_besoins b ON o.id_besoins = b.id
             JOIN BNGRC_ville v ON s.id_ville = v.id
             JOIN BNGRC_unite u ON o.id_unite = u.id
             JOIN BNGRC_etat e ON s.id_etat = e.id
-            ORDER BY s.date ASC, s.id ASC";
+            ORDER BY s.ordre ASC, s.date ASC, s.id ASC";
         $stmt = $this->db->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getById(int $id): ?array
     {
-        $sql = "SELECT s.id, s.id_objet, o.libellee, o.id_besoins, b.nom AS besoin, s.id_ville, v.nom AS ville, s.quantite, o.id_unite AS id_unite, u.nom AS unite, o.prix_unitaire AS prix_unitaire, s.date AS date, s.id_etat, e.nom AS etat
+        $sql = "SELECT s.id, s.id_objet, o.libellee, o.id_besoins, b.nom AS besoin, s.id_ville, v.nom AS ville, s.quantite, s.ordre, o.id_unite AS id_unite, u.nom AS unite, o.prix_unitaire AS prix_unitaire, s.date AS date, s.id_etat, e.nom AS etat
             FROM BNGRC_sinistre s
             JOIN BNGRC_objet o ON s.id_objet = o.id
             JOIN BNGRC_besoins b ON o.id_besoins = b.id
@@ -42,16 +42,16 @@ class SinistreModel
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return $row === false ? null : $row;
     }
-    public function insertByObjet(int $id_objet, int $id_ville, int $quantite, ?string $date = null): int
+    public function insertByObjet(int $id_objet, int $id_ville, int $quantite, ?string $date = null, int $ordre = 0): int
     {
         if ($date !== null) {
-            $sql = "INSERT INTO BNGRC_sinistre (id_objet, id_ville, quantite, quantite_initiale, date) VALUES (?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO BNGRC_sinistre (id_objet, id_ville, quantite, ordre, quantite_initiale, date) VALUES (?, ?, ?, ?, ?, ?)";
             $stmt = $this->db->prepare($sql);
-            $stmt->execute([$id_objet, $id_ville, $quantite, $quantite, $date]);
+            $stmt->execute([$id_objet, $id_ville, $quantite, $ordre, $quantite, $date]);
         } else {
-            $sql = "INSERT INTO BNGRC_sinistre (id_objet, id_ville, quantite, quantite_initiale) VALUES (?, ?, ?, ?)";
+            $sql = "INSERT INTO BNGRC_sinistre (id_objet, id_ville, quantite, ordre, quantite_initiale) VALUES (?, ?, ?, ?, ?)";
             $stmt = $this->db->prepare($sql);
-            $stmt->execute([$id_objet, $id_ville, $quantite, $quantite]);
+            $stmt->execute([$id_objet, $id_ville, $quantite, $ordre, $quantite]);
         }
 
         return (int)$this->db->lastInsertId();

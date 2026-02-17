@@ -118,13 +118,13 @@ class DonsController
 
             // Filtrer : exclure 'Argent' et quantite <= 0 (comme simulation)
             $dons = array_filter($dons, function ($d) {
-                $besoin = isset($d['besoin']) ? trim(mb_strtolower($d['besoin'])) : '';
+                $besoin = isset($d['besoin']) ? trim($this->toLower($d['besoin'])) : '';
                 return $besoin !== 'argent' && (int)($d['quantite'] ?? 0) > 0;
             });
             $dons = array_values($dons);
 
             $sinistres = array_filter($sinistres, function ($s) {
-                $besoin = isset($s['besoin']) ? trim(mb_strtolower($s['besoin'])) : '';
+                $besoin = isset($s['besoin']) ? trim($this->toLower($s['besoin'])) : '';
                 return $besoin !== 'argent' && (int)($s['quantite'] ?? 0) > 0;
             });
             $sinistres = array_values($sinistres);

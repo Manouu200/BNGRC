@@ -119,6 +119,12 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                                     </div>
 
                                     <div class="form-group-wrapper">
+                                        <label class="form-label">Ordre de priorité</label>
+                                        <small style="display: block; color: #666; margin-bottom: 0.5rem;">Numéro d'ordre pour le dispatch (0 = pas de priorité)</small>
+                                        <input type="number" name="ordre" class="form-control" placeholder="Exemple: 1" value="0" min="0" step="1">
+                                    </div>
+
+                                    <div class="form-group-wrapper">
                                         <label class="form-label required">Unité de Mesure</label>
                                         <small style="display: block; color: #666; margin-bottom: 0.5rem;">Automatiquement filtrée selon le besoin</small>
                                         <?php if (!empty($unites) && is_array($unites)): ?>

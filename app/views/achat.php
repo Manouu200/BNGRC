@@ -99,6 +99,7 @@
                                                             <th>Quantité</th>
                                                             <th>Unité</th>
                                                             <th>Prix unitaire</th>
+                                                            <th>Ordre</th>
                                                             <th>Date</th>
                                                             <th>État</th>
                                                             <th>Action</th>
@@ -121,6 +122,7 @@
                                                                     }
                                                                     ?>
                                                                 </td>
+                                                                <td><?php echo htmlspecialchars((string)($s['ordre'] ?? '0')); ?></td>
                                                                 <td><?php echo htmlspecialchars($s['date'] ?? ''); ?></td>
                                                                 <td><?php echo htmlspecialchars($s['etat'] ?? ''); ?></td>
                                                                 <td>

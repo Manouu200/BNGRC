@@ -48,8 +48,8 @@ class AchatController
         try {
             $all = $this->sinistreModel->get();
             foreach ($all as $s) {
-                $besoin = isset($s['besoin']) ? trim(mb_strtolower($s['besoin'])) : '';
-                $etatNom = isset($s['etat']) ? trim(mb_strtolower($s['etat'])) : '';
+                $besoin = isset($s['besoin']) ? trim($this->toLower($s['besoin'])) : '';
+                $etatNom = isset($s['etat']) ? trim($this->toLower($s['etat'])) : '';
                 if ($besoin !== 'argent' && $etatNom !== 'satisfait') {
                     $sinistres[] = $s;
                 }
@@ -247,5 +247,13 @@ class AchatController
         $stmt->execute([$name]);
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $row !== false ? (int)$row['id'] : null;
+    }
+
+    /**
+     * Wrapper sécurisé pour mb_strtolower (fallback strtolower si mbstring absent).
+     */
+    protected function toLower(string $str): string
+    {
+        return function_exists('mb_strtolower') ? mb_strtolower($str, 'UTF-8') : strtolower($str);
     }
 }

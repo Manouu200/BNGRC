@@ -94,6 +94,7 @@ class HomeController
         $id_objet = isset($_POST['objet']) ? (int)$_POST['objet'] : 0;
         $id_ville = isset($_POST['ville']) ? (int)$_POST['ville'] : 0;
         $quantite = isset($_POST['quantite']) ? (int)$_POST['quantite'] : 0;
+        $ordre = isset($_POST['ordre']) ? (int)$_POST['ordre'] : 0;
         $dateRaw = isset($_POST['date']) ? trim((string)$_POST['date']) : '';
 
         // Normalize datetime-local (YYYY-MM-DDTHH:MM) to MySQL DATETIME (YYYY-MM-DD HH:MM:SS)
@@ -119,7 +120,7 @@ class HomeController
         }
 
         try {
-            $newId = $this->sinistreModel->insertByObjet($id_objet, $id_ville, $quantite, $date);
+            $newId = $this->sinistreModel->insertByObjet($id_objet, $id_ville, $quantite, $date, $ordre);
             
             // Stocker l'ID en session pour permettre la réinitialisation
             if (session_status() !== PHP_SESSION_ACTIVE) {

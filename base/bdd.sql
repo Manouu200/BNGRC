@@ -49,6 +49,7 @@ CREATE TABLE BNGRC_sinistre(
     id_objet INT NOT NULL,
     id_ville INT NOT NULL,
     quantite INT NOT NULL,
+    ordre INT NOT NULL DEFAULT 0,
     quantite_initiale INT NOT NULL,
     date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     id_etat INT NOT NULL DEFAULT 1,
@@ -85,42 +86,6 @@ CREATE TABLE BNGRC_achat(
 );
 
 -- ========================
--- DONNEES DE BASE
--- ========================
-
-INSERT INTO BNGRC_besoins (nom) VALUES
-('nature'),
-('Matériaux'),
-('Argent');
-
-INSERT INTO BNGRC_unite (nom) VALUES
-('Litre'),
-('Kg'),
-('Ariary'),
-('unite');
-
-INSERT INTO BNGRC_ville (nom) VALUES
-('Tananarive'),
-('Majunga'),
-('Tamatave');
-
-INSERT INTO BNGRC_etat (nom) VALUES
-('insatisfait'),
-('satisfait');
-
-INSERT INTO BNGRC_objet (id_besoins, libellee, id_unite, prix_unitaire) VALUES
-(1, 'Riz blanc', 2, 3000.00),
-(1, 'Huile alimentaire', 1, 12000.00),
-(1, 'Eau potable', 1, 1500.00),
-(1, 'Pâtes alimentaires', 2, 4000.00),
-(1, 'Lait en poudre', 2, 18000.00),
-(2, 'Bâches de protection', 4, 25000.00),
-(2, 'Kit de premiers secours', 4, 10000.00),
-(2, 'Couvertures isothermes', 4, 8000.00),
-(2, 'Lampes solaires', 4, 45000.00),
-(3, 'Fonds d urgence', 3, NULL);
-
--- ========================
 -- VUES
 -- ========================
 
@@ -131,6 +96,7 @@ SELECT
     b.nom AS besoin,
     o.libellee AS objet,
     s.quantite,
+    s.ordre,
     s.quantite_initiale,
     u.nom AS unite,
     s.date,
@@ -157,3 +123,104 @@ JOIN BNGRC_ville v ON d.id_ville = v.id
 JOIN BNGRC_objet o ON d.id_objet = o.id
 JOIN BNGRC_besoins b ON o.id_besoins = b.id
 JOIN BNGRC_unite u ON o.id_unite = u.id;
+-- ========================
+-- DONNEES DE BASE
+-- ========================
+
+INSERT INTO BNGRC_besoins (nom) VALUES
+('nature'),
+('Matériaux'),
+('Argent');
+
+INSERT INTO BNGRC_unite (nom) VALUES
+('L'),
+('Kg'),
+('Ariary'),
+('unite');
+
+INSERT INTO BNGRC_ville (nom) VALUES
+('Toamasina'),
+('Mananjary'),
+('Nosy Be'),
+('Morondava'),
+('Farafangana');
+
+INSERT INTO BNGRC_etat (nom) VALUES
+('insatisfait'),
+('satisfait');
+
+INSERT INTO BNGRC_objet (id_besoins, libellee, id_unite, prix_unitaire) VALUES
+(1, 'Riz', 2, 3000.00),
+(1, 'Eau', 1, 1000.00),
+(2, 'Tôle', 4, 25000.00),
+(2, 'Bâche', 4, 15000.00),
+(3, 'Argent', 3, 1.00),
+(1, 'Huile', 1, 6000.00),
+(2, 'Clous', 2, 8000.00),
+(2, 'Bois', 4, 10000.00),
+(1, 'Haricots', 4, 4000.00),
+(2, 'groupe', 4, 6750000.00);
+
+INSERT INTO BNGRC_sinistre 
+(id_objet, id_ville, quantite, ordre, quantite_initiale, date, id_etat)
+VALUES
+-- Toamasina
+(1, 1, 800, 17, 800, '2026-02-16', 1),
+(2, 1, 1500, 4, 1500, '2026-02-15', 1),
+(3, 1, 120, 23, 120, '2026-02-16', 1),
+(4, 1, 200, 1, 200, '2026-02-15', 1),
+(5, 1, 12000000, 12, 12000000, '2026-02-16', 1),
+(10, 1, 3, 16, 3, '2026-02-15', 1),
+
+-- Mananjary
+(1, 2, 500, 9, 500, '2026-02-15', 1),
+(6, 2, 120, 25, 120, '2026-02-16', 1),
+(3, 2, 80, 6, 80, '2026-02-15', 1),
+(7, 2, 60, 19, 60, '2026-02-16', 1),
+(5, 2, 6000000, 3, 6000000, '2026-02-15', 1),
+
+-- Farafangana
+(1, 5, 600, 21, 600, '2026-02-16', 1),
+(2, 5, 1000, 14, 1000, '2026-02-15', 1),
+(4, 5, 150, 8, 150, '2026-02-16', 1),
+(8, 5, 100, 26, 100, '2026-02-15', 1),
+(5, 5, 8000000, 10, 8000000, '2026-02-16', 1),
+
+-- Nosy Be
+(1, 3, 300, 5, 300, '2026-02-15', 1),
+(9, 3, 200, 18, 200, '2026-02-16', 1),
+(3, 3, 40, 2, 40, '2026-02-15', 1),
+(7, 3, 30, 24, 30, '2026-02-16', 1),
+(5, 3, 4000000, 7, 4000000, '2026-02-15', 1),
+
+-- Morondava
+(1, 4, 700, 11, 700, '2026-02-16', 1),
+(2, 4, 1200, 20, 1200, '2026-02-15', 1),
+(4, 4, 180, 15, 180, '2026-02-16', 1),
+(8, 4, 150, 22, 150, '2026-02-15', 1),
+(5, 4, 10000000, 13, 10000000, '2026-02-16', 1);
+
+INSERT INTO BNGRC_dons
+(id_ville, id_objet, quantite, date)
+VALUES
+-- Argent
+(1, 5, 5000000, '2026-02-16'),
+(1, 5, 3000000, '2026-02-16'),
+(1, 5, 4000000, '2026-02-17'),
+(1, 5, 1500000, '2026-02-17'),
+(1, 5, 6000000, '2026-02-17'),
+(1, 5, 20000000, '2026-02-19'),
+
+-- Nature
+(1, 1, 400, '2026-02-16'),
+(1, 2, 600, '2026-02-16'),
+(1, 9, 100, '2026-02-17'),
+(1, 1, 2000, '2026-02-18'),
+(1, 2, 5000, '2026-02-18'),
+(1, 9, 88, '2026-02-17'),
+
+-- Matériel
+(1, 3, 50, '2026-02-17'),
+(1, 4, 70, '2026-02-17'),
+(1, 3, 300, '2026-02-18'),
+(1, 4, 500, '2026-02-19');

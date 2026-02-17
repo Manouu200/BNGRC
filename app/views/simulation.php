@@ -227,6 +227,7 @@
                                                             <th>Libellé</th>
                                                             <th>Besoin</th>
                                                             <th>Quantité</th>
+                                                            <th>Ordre</th>
                                                             <th>Unité</th>
                                                             <th>État</th>
                                                         </tr>
@@ -238,6 +239,7 @@
                                                                 <td><?php echo htmlspecialchars($s['libellee'] ?? ''); ?></td>
                                                                 <td><?php echo htmlspecialchars($s['besoin'] ?? ''); ?></td>
                                                                 <td><strong><?php echo htmlspecialchars($s['quantite'] ?? '0'); ?></strong></td>
+                                                                <td><?php echo htmlspecialchars($s['ordre'] ?? '0'); ?></td>
                                                                 <td><?php echo htmlspecialchars($s['unite'] ?? ''); ?></td>
                                                                 <td><?php echo htmlspecialchars($s['etat'] ?? ''); ?></td>
                                                             </tr>
