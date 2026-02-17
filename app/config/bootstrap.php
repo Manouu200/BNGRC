@@ -17,6 +17,12 @@ if(file_exists(__DIR__. $ds . 'config.php') === false) {
 $app = Flight::app();
 
 /*
+ * BASE_URL Configuration
+ * Hardcoded for deployment - change this value based on your server setup
+ */
+define('BASE_URL', '/ETU004253/ETU004058_ETU003960_ETU004253');
+
+/*
  * Load the config file
  * P.S. When you require a php file and that file returns an array, the array
  * will be returned by the require statement where you can assign it to a var.
@@ -59,7 +65,7 @@ require('routes.php');
 
 // At this point, your app should have all the instructions it needs and it'll
 // "start" processing everything. This is where the magic happens.
-define('BASE_URL', rtrim($app->get('flight.base_url'), '/'));
+// BASE_URL is already defined above before config.php is loaded
 
 $app->start();
 /*

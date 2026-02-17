@@ -60,7 +60,7 @@ class SimulationController
     public function simulate(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->app->redirect(BASE_URL . '/simulation');
+            $this->app->redirect('/simulation');
             return;
         }
 
@@ -76,7 +76,7 @@ class SimulationController
     public function validate(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->app->redirect(BASE_URL . '/simulation');
+            $this->app->redirect('/simulation');
             return;
         }
 

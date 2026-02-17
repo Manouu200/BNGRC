@@ -43,7 +43,7 @@ class DonsController
     public function createDon()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->app->redirect(BASE_URL . '/dons');
+            $this->app->redirect('/dons');
             return;
         }
 
@@ -53,7 +53,7 @@ class DonsController
         $date = isset($_POST['date']) && $_POST['date'] !== '' ? $_POST['date'] : null;
 
         if ($id_objet <= 0 || $id_ville <= 0) {
-            $this->app->redirect(BASE_URL . '/dons?created=0');
+            $this->app->redirect('/dons?created=0');
             return;
         }
         try {
@@ -68,9 +68,9 @@ class DonsController
             }
             $_SESSION['created_dons'][] = $newId;
             
-            $this->app->redirect(BASE_URL . '/dons?created=1');
+            $this->app->redirect('/dons?created=1');
         } catch (\Throwable $e) {
-            $this->app->redirect(BASE_URL . '/dons?created=0');
+            $this->app->redirect('/dons?created=0');
         }
     }
 
@@ -93,13 +93,13 @@ class DonsController
             $_SESSION['created_dons'] = [];
         }
 
-        $this->app->redirect(BASE_URL . '/dons?reset=' . $deletedCount);
+        $this->app->redirect('/dons?reset=' . $deletedCount);
     }
 
     public function dispatchDons()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->app->redirect(BASE_URL . '/dons');
+            $this->app->redirect('/dons');
             return;
         }
 

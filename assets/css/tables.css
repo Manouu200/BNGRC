@@ -1,0 +1,307 @@
+/* ============================================
+   TABLE STYLES - Professional Glass Theme
+   ============================================ */
+
+.table-wrapper {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+}
+
+/* Table Header */
+.table thead {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.table thead th {
+    padding: var(--spacing-lg);
+    text-align: left;
+    font-weight: var(--font-weight-semibold);
+    color: var(--dark);
+    font-size: var(--font-size-sm);
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+    transition: background-color var(--transition-fast);
+}
+
+.table thead th:hover {
+    background-color: rgba(59, 130, 246, 0.15);
+}
+
+/* Table Body */
+.table tbody tr {
+    border-bottom: 1px solid var(--gray-200);
+    transition: background-color var(--transition-fast);
+}
+
+.table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.table tbody tr:hover {
+    background-color: var(--gray-50);
+}
+
+.table tbody tr.even:hover {
+    background-color: rgba(37, 99, 235, 0.05);
+}
+
+.table tbody td {
+    padding: var(--spacing-lg);
+    color: var(--dark);
+    font-size: var(--font-size-sm);
+    vertical-align: middle;
+}
+
+/* Alternate Row Colors */
+.table tbody tr:nth-child(even) {
+    background-color: var(--white);
+}
+
+.table tbody tr:nth-child(odd) {
+    background-color: var(--gray-50);
+}
+
+/* Table Variants */
+
+/* Striped Table */
+.table-striped tbody tr:nth-child(even) {
+    background-color: rgba(37, 99, 235, 0.02);
+}
+
+/* Bordered Table */
+.table-bordered {
+    border: 1px solid var(--gray-200);
+}
+
+.table-bordered td,
+.table-bordered th {
+    border: 1px solid var(--gray-200);
+}
+
+/* Hover Effect */
+.table-hover tbody tr:hover {
+    background-color: rgba(37, 99, 235, 0.1);
+    cursor: pointer;
+}
+
+/* Compact Table */
+.table-sm {
+    font-size: var(--font-size-xs);
+}
+
+.table-sm thead th {
+    padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.table-sm tbody td {
+    padding: var(--spacing-md) var(--spacing-lg);
+}
+
+/* Table Status Classes */
+.table-success {
+    background-color: rgba(16, 185, 129, 0.05);
+    border-left: 4px solid var(--success-color);
+}
+
+.table-warning {
+    background-color: rgba(245, 158, 11, 0.05);
+    border-left: 4px solid var(--warning-color);
+}
+
+.table-danger {
+    background-color: rgba(239, 68, 68, 0.05);
+    border-left: 4px solid var(--danger-color);
+}
+
+.table-info {
+    background-color: rgba(14, 165, 233, 0.05);
+    border-left: 4px solid var(--info-color);
+}
+
+/* Table Cells */
+.table-cell-center {
+    text-align: center;
+}
+
+.table-cell-right {
+    text-align: right;
+}
+
+.table-cell-bold {
+    font-weight: var(--font-weight-semibold);
+    color: var(--dark);
+}
+
+.table-cell-muted {
+    color: var(--gray-500);
+}
+
+/* Cell with Badge */
+.table-cell-badge {
+    display: inline-block;
+}
+
+/* Cell with Icon */
+.table-cell-icon {
+    width: 20px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: var(--spacing-sm);
+}
+
+/* Actions Column */
+.table-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    justify-content: flex-end;
+}
+
+.table-actions .btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-xs);
+}
+
+/* Expansion Row */
+.table-expand-row {
+    display: none;
+    background-color: var(--gray-50);
+}
+
+.table-expand-row.open {
+    display: table-row;
+}
+
+.table-expand-content {
+    padding: var(--spacing-xl);
+    grid-column: 1 / -1;
+}
+
+/* Scrollable Table */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive .table {
+    min-width: 500px;
+}
+
+@media (max-width: 768px) {
+    .table-responsive {
+        font-size: var(--font-size-xs);
+    }
+    
+    .table thead th {
+        padding: var(--spacing-md);
+    }
+    
+    .table tbody td {
+        padding: var(--spacing-md);
+    }
+    
+    .table-actions {
+        flex-direction: column;
+    }
+    
+    .table-actions .btn {
+        width: 100%;
+    }
+}
+
+/* Empty State */
+.table-empty {
+    padding: var(--spacing-2xl);
+    text-align: center;
+    color: var(--gray-500);
+}
+
+.table-empty-icon {
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--spacing-lg);
+    opacity: 0.5;
+}
+
+.table-empty-message {
+    font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Sorting Indicator */
+.table-sortable {
+    cursor: pointer;
+    user-select: none;
+    padding-right: var(--spacing-2xl);
+    position: relative;
+}
+
+.table-sortable::after {
+    content: '⇅';
+    position: absolute;
+    right: var(--spacing-md);
+    color: var(--gray-300);
+    font-size: var(--font-size-sm);
+}
+
+.table-sortable.asc::after {
+    content: '↑';
+    color: var(--primary-color);
+}
+
+.table-sortable.desc::after {
+    content: '↓';
+    color: var(--primary-color);
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    gap: var(--spacing-sm);
+    justify-content: center;
+    align-items: center;
+    margin-top: var(--spacing-2xl);
+}
+
+.pagination .page-item {
+    display: inline-block;
+}
+
+.pagination .page-link {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius-md);
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+}
+
+.pagination .page-link:hover {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border-color: var(--primary-color);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border-color: var(--primary-color);
+}
+
+.pagination .page-item.disabled .page-link {
+    color: var(--gray-400);
+    cursor: not-allowed;
+    opacity: 0.5;
+}

@@ -46,9 +46,9 @@ if (empty($app) === true) {
 $app->path(__DIR__ . $ds . '..' . $ds . '..');
 
 // Core config variables
-// En dev (php -S), pas de préfixe. En production (Apache/Nginx), utiliser '/BNGRC'
-$baseUrl = php_sapi_name() === 'cli-server' ? '' : '/BNGRC';
-$app->set('flight.base_url', $baseUrl);
+// BASE_URL is auto-detected in bootstrap.php from $_SERVER['SCRIPT_NAME']
+// and is available as a constant throughout the application
+$app->set('flight.base_url', BASE_URL);           // Base URL for your app (auto-detected)
 $app->set('flight.case_sensitive', false);    // Set true for case sensitive routes. Default: false
 $app->set('flight.log_errors', true);         // Log errors to file. Recommended: true in production
 $app->set('flight.handle_errors', false);     // Let Tracy handle errors if false. Set true to use Flight's error handler
@@ -79,10 +79,10 @@ $app->set('csp_nonce', $nonce);
 
 return [
 	'database' => [
-		'host'     => '127.0.0.1',
-		'dbname'   => 'BNGRC',      // change si besoin
-		'user'     => 'root',      // change si besoin
-		'password' => '',          // mot de passe MySQL
+		'host'     => '172.16.7.131',
+		'dbname'   => 'db_s2_ETU004253',      // change si besoin
+		'user'     => 'ETU004253',      // change si besoin
+		'password' => 'iNlcehD6',          // mot de passe MySQL
 	],
 
 

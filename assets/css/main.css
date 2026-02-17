@@ -1,0 +1,93 @@
+/* ============================================
+   MAIN CSS FILE - Imports all stylesheets
+   Include this single file in your HTML
+   ============================================ */
+
+@import url('./theme.css');
+@import url('./layout.css');
+@import url('./forms.css');
+@import url('./buttons.css');
+@import url('./tables.css');
+@import url('./home.css');
+@import url('./dashboard.css');
+
+/* ============================================
+   ADDITIONAL RESPONSIVE UTILITIES
+   ============================================ */
+
+/* Print Styles */
+@media print {
+    .sidebar-container,
+    .site-footer,
+    .dashboard-actions,
+    .table-container .table-actions {
+        display: none !important;
+    }
+    
+    .main-content {
+        margin-left: 0;
+    }
+    
+    .page-wrapper {
+        padding: 0;
+    }
+}
+
+/* Dark Mode Support (Optional) */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #1a1a1a;
+        color: #e0e0e0;
+    }
+    
+    .form-control,
+    .form-select,
+    textarea,
+    .card,
+    .form-section-home,
+    .table-section {
+        background-color: #2d2d2d;
+        color: #e0e0e0;
+        border-color: #404040;
+    }
+    
+    .form-control:focus,
+    .form-select:focus {
+        background-color: #2d2d2d;
+    }
+}
+
+/* Accessibility */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Focus visible styles for keyboard navigation */
+*:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Skip to main content link */
+.skip-to-main {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--primary-color);
+    color: var(--white);
+    padding: var(--spacing-md);
+    text-decoration: none;
+    z-index: 100;
+}
+
+.skip-to-main:focus {
+    top: 0;
+}
