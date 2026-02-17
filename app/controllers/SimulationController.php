@@ -27,31 +27,36 @@ class SimulationController
      */
     public function showSimulation(): void
     {
-        $dons = $this->donModel->getForDispatch();
-        $sinistres = $this->sinistreModel->get();
-        $villes = $this->villeModel->get();
+        try {
+            $dons = $this->donModel->getForDispatch();
+            $sinistres = $this->sinistreModel->get();
+            $villes = $this->villeModel->get();
 
-        // Filtrer les sinistres dont le besoin n'est pas 'Argent' et quantite > 0
-        $sinistresFiltered = array_filter($sinistres, function ($s) {
-            $besoin = isset($s['besoin']) ? trim(mb_strtolower($s['besoin'])) : '';
-            $qty = (int)($s['quantite'] ?? 0);
-            return $besoin !== 'argent' && $qty > 0;
-        });
+            // Filtrer les sinistres dont le besoin n'est pas 'Argent' et quantite > 0
+            $sinistresFiltered = array_filter($sinistres, function ($s) {
+                $besoin = isset($s['besoin']) ? trim(mb_strtolower($s['besoin'])) : '';
+                $qty = (int)($s['quantite'] ?? 0);
+                return $besoin !== 'argent' && $qty > 0;
+            });
 
-        // Filtrer les dons dont le besoin n'est pas 'Argent' et quantite > 0
-        $donsFiltered = array_filter($dons, function ($d) {
-            $besoin = isset($d['besoin']) ? trim(mb_strtolower($d['besoin'])) : '';
-            $qty = (int)($d['quantite'] ?? 0);
-            return $besoin !== 'argent' && $qty > 0;
-        });
+            // Filtrer les dons dont le besoin n'est pas 'Argent' et quantite > 0
+            $donsFiltered = array_filter($dons, function ($d) {
+                $besoin = isset($d['besoin']) ? trim(mb_strtolower($d['besoin'])) : '';
+                $qty = (int)($d['quantite'] ?? 0);
+                return $besoin !== 'argent' && $qty > 0;
+            });
 
-        $this->app->render('simulation.php', [
-            'dons' => array_values($donsFiltered),
-            'sinistres' => array_values($sinistresFiltered),
-            'villes' => $villes,
-            'simulationResults' => null,
-            'simulationStatus' => null,
-        ]);
+            $this->app->render('simulation.php', [
+                'dons' => array_values($donsFiltered),
+                'sinistres' => array_values($sinistresFiltered),
+                'villes' => $villes,
+                'simulationResults' => null,
+                'simulationStatus' => null,
+            ]);
+        } catch (\Throwable $e) {
+            echo '<pre>DEBUG ERROR: ' . $e->getMessage() . "\n" . $e->getFile() . ':' . $e->getLine() . "\n" . $e->getTraceAsString() . '</pre>';
+            exit;
+        }
     }
 
     /**
