@@ -57,11 +57,43 @@ class DonsController
             return;
         }
         try {
-            $this->donModel->insertByObjet($id_ville, $id_objet, $quantite, $date);
+            $newId = $this->donModel->insertByObjet($id_ville, $id_objet, $quantite, $date);
+            
+            // Stocker l'ID en session pour permettre la réinitialisation
+            if (session_status() !== PHP_SESSION_ACTIVE) {
+                session_start();
+            }
+            if (!isset($_SESSION['created_dons'])) {
+                $_SESSION['created_dons'] = [];
+            }
+            $_SESSION['created_dons'][] = $newId;
+            
             $this->app->redirect(BASE_URL . '/dons?created=1');
         } catch (\Throwable $e) {
             $this->app->redirect(BASE_URL . '/dons?created=0');
         }
+    }
+
+    /**
+     * Réinitialise (supprime) les dons créés pendant cette session
+     */
+    public function resetSession()
+    {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+
+        $deletedCount = 0;
+        if (isset($_SESSION['created_dons']) && is_array($_SESSION['created_dons'])) {
+            foreach ($_SESSION['created_dons'] as $id) {
+                if ($this->donModel->delete((int)$id)) {
+                    $deletedCount++;
+                }
+            }
+            $_SESSION['created_dons'] = [];
+        }
+
+        $this->app->redirect(BASE_URL . '/dons?reset=' . $deletedCount);
     }
 
     public function dispatchDons()

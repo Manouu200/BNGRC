@@ -1,5 +1,8 @@
 <?php
 // Vue : inserer dons
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -28,10 +31,16 @@
 
                     <?php if (isset($_GET['created'])): ?>
                         <?php if ($_GET['created'] == '1'): ?>
-                            <div class="alert alert-success">Don enregistré.</div>
+                            <div class="alert alert-success" style="background: #d4edda; color: #155724; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 4px solid #28a745;">Don enregistré.</div>
                         <?php else: ?>
-                            <div class="alert alert-danger">Erreur lors de l'enregistrement.</div>
+                            <div class="alert alert-danger" style="background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 4px solid #dc3545;">Erreur lors de l'enregistrement.</div>
                         <?php endif; ?>
+                    <?php endif; ?>
+
+                    <?php if (isset($_GET['reset'])): ?>
+                        <div class="alert alert-info" style="background: #d1ecf1; color: #0c5460; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 4px solid #17a2b8;">
+                            <?php echo (int)$_GET['reset']; ?> don(s) supprimé(s) de cette session.
+                        </div>
                     <?php endif; ?>
 
                     <?php if (!empty($dispatchStatus)): ?>
@@ -195,6 +204,29 @@
                                 <button type="submit" class="btn btn-primary" style="padding: 0.75rem 1.5rem; font-weight: 600;">✓ Enregistrer le Don</button>
                             </div>
                         </form>
+
+                        <!-- Bouton Réinitialisation Session -->
+                        <?php
+                        $sessionDonsCount = isset($_SESSION['created_dons']) ? count($_SESSION['created_dons']) : 0;
+                        ?>
+                        <?php if ($sessionDonsCount > 0): ?>
+                        <form method="post" action="<?php echo BASE_URL; ?>/dons/reset" style="margin-top: 1.5rem; text-align: center;">
+                            <button type="submit" onclick="return confirm('Voulez-vous vraiment supprimer les <?php echo $sessionDonsCount; ?> don(s) créé(s) pendant cette session ?');" style="
+                                background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+                                color: #fff;
+                                border: none;
+                                padding: 0.75rem 1.5rem;
+                                border-radius: 8px;
+                                font-size: 0.95rem;
+                                font-weight: 600;
+                                cursor: pointer;
+                                box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+                                transition: all 0.3s ease;
+                            " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(220, 53, 69, 0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(220, 53, 69, 0.3)';">
+                                ↩️ Annuler les <?php echo $sessionDonsCount; ?> don(s) de cette session
+                            </button>
+                        </form>
+                        <?php endif; ?>
                     </div>
             </div>
 

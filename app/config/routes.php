@@ -69,3 +69,14 @@ $router->post('/dons/dispatch', function () use ($app) {
     $controller = new \app\controllers\DonsController($app);
     $controller->dispatchDons();
 });
+
+// Routes de réinitialisation de session
+$router->post('/besoins/reset', function () use ($app) {
+    $controller = new HomeController($app);
+    $controller->resetSession();
+});
+
+$router->post('/dons/reset', function () use ($app) {
+    $controller = new \app\controllers\DonsController($app);
+    $controller->resetSession();
+});

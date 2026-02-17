@@ -119,10 +119,42 @@ class HomeController
         }
 
         try {
-            $this->sinistreModel->insertByObjet($id_objet, $id_ville, $quantite, $date);
+            $newId = $this->sinistreModel->insertByObjet($id_objet, $id_ville, $quantite, $date);
+            
+            // Stocker l'ID en session pour permettre la réinitialisation
+            if (session_status() !== PHP_SESSION_ACTIVE) {
+                session_start();
+            }
+            if (!isset($_SESSION['created_besoins'])) {
+                $_SESSION['created_besoins'] = [];
+            }
+            $_SESSION['created_besoins'][] = $newId;
+            
             $this->app->redirect(BASE_URL . '/?created=1');
         } catch (\Throwable $e) {
             $this->app->redirect(BASE_URL . '/?created=0');
         }
+    }
+
+    /**
+     * Réinitialise (supprime) les besoins créés pendant cette session
+     */
+    public function resetSession()
+    {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+
+        $deletedCount = 0;
+        if (isset($_SESSION['created_besoins']) && is_array($_SESSION['created_besoins'])) {
+            foreach ($_SESSION['created_besoins'] as $id) {
+                if ($this->sinistreModel->delete((int)$id)) {
+                    $deletedCount++;
+                }
+            }
+            $_SESSION['created_besoins'] = [];
+        }
+
+        $this->app->redirect(BASE_URL . '/?reset=' . $deletedCount);
     }
 }

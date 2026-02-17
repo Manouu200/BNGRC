@@ -1,5 +1,8 @@
 <?php
 // Vue : home
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -25,6 +28,20 @@
         <div class="main-content">
             <div class="page-wrapper">
                 <div class="home-page">
+
+                    <?php if (isset($_GET['created'])): ?>
+                        <?php if ($_GET['created'] == '1'): ?>
+                            <div class="alert alert-success" style="background: #d4edda; color: #155724; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 4px solid #28a745;">Besoin enregistré avec succès.</div>
+                        <?php else: ?>
+                            <div class="alert alert-danger" style="background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 4px solid #dc3545;">Erreur lors de l'enregistrement.</div>
+                        <?php endif; ?>
+                    <?php endif; ?>
+
+                    <?php if (isset($_GET['reset'])): ?>
+                        <div class="alert alert-info" style="background: #d1ecf1; color: #0c5460; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 4px solid #17a2b8;">
+                            <?php echo (int)$_GET['reset']; ?> besoin(s) supprimé(s) de cette session.
+                        </div>
+                    <?php endif; ?>
     
                     <!-- Form Section -->
                     <div class="form-section-home">
@@ -144,11 +161,34 @@
                             </div>
 
                             <!-- Buttons -->
-                            <div class="submit-button-wrapper" style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                            <div class="submit-button-wrapper" style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; flex-wrap: wrap;">
                                 <button type="reset" class="btn btn-outline-secondary" style="padding: 0.75rem 2rem;">🔄 Réinitialiser le formulaire</button>
                                 <button type="submit" class="btn btn-primary" style="padding: 0.75rem 2rem; font-weight: 600;">✓ Enregistrer ce Besoin</button>
                             </div>
                         </form>
+
+                        <!-- Bouton Réinitialisation Session -->
+                        <?php
+                        $sessionBesoinsCount = isset($_SESSION['created_besoins']) ? count($_SESSION['created_besoins']) : 0;
+                        ?>
+                        <?php if ($sessionBesoinsCount > 0): ?>
+                        <form method="post" action="<?php echo BASE_URL; ?>/besoins/reset" style="margin-top: 1.5rem; text-align: center;">
+                            <button type="submit" onclick="return confirm('Voulez-vous vraiment supprimer les <?php echo $sessionBesoinsCount; ?> besoin(s) créé(s) pendant cette session ?');" style="
+                                background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+                                color: #fff;
+                                border: none;
+                                padding: 0.75rem 1.5rem;
+                                border-radius: 8px;
+                                font-size: 0.95rem;
+                                font-weight: 600;
+                                cursor: pointer;
+                                box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+                                transition: all 0.3s ease;
+                            " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(220, 53, 69, 0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(220, 53, 69, 0.3)';">
+                                ↩️ Annuler les <?php echo $sessionBesoinsCount; ?> besoin(s) de cette session
+                            </button>
+                        </form>
+                        <?php endif; ?>
                     </div>
 
                 </div>
