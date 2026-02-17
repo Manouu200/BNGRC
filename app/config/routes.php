@@ -49,6 +49,22 @@ $router->post('/dons/create', function () use ($app) {
     $controller->createDon();
 });
 
+// Simulation routes
+$router->get('/simulation', function () use ($app) {
+    $controller = new \app\controllers\SimulationController($app);
+    $controller->showSimulation();
+});
+
+$router->post('/simulation/simulate', function () use ($app) {
+    $controller = new \app\controllers\SimulationController($app);
+    $controller->simulate();
+});
+
+$router->post('/simulation/validate', function () use ($app) {
+    $controller = new \app\controllers\SimulationController($app);
+    $controller->validate();
+});
+
 $router->post('/dons/dispatch', function () use ($app) {
     $controller = new \app\controllers\DonsController($app);
     $controller->dispatchDons();
