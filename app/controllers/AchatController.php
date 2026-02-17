@@ -49,7 +49,8 @@ class AchatController
             $all = $this->sinistreModel->get();
             foreach ($all as $s) {
                 $besoin = isset($s['besoin']) ? trim(mb_strtolower($s['besoin'])) : '';
-                if ($besoin !== 'argent') {
+                $etatNom = isset($s['etat']) ? trim(mb_strtolower($s['etat'])) : '';
+                if ($besoin !== 'argent' && $etatNom !== 'satisfait') {
                     $sinistres[] = $s;
                 }
             }
@@ -211,11 +212,11 @@ class AchatController
             }
 
             $achatDate = date('Y-m-d H:i:s');
-            $this->achatModel->insert($id_objet, $achatDate);
+            $this->achatModel->insert($id_objet, $qtyNeeded, $amountToSpend, $achatDate);
 
             $etatSatisfaitId = $this->getEtatIdByName('satisfait') ?? 2;
-            // Mettre à jour toutes les sinistres liées à cet objet (quantité = 0, état = satisfait)
-            $this->sinistreModel->markAllByObjetAsSatisfied($id_objet, $etatSatisfaitId);
+            // Marque le sinistre comme satisfait sans modifier la quantité enregistrée
+            $this->sinistreModel->updateQuantiteEtat($sinistreId, null, $etatSatisfaitId);
 
             $db->commit();
 

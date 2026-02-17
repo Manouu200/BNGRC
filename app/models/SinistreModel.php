@@ -73,14 +73,23 @@ class SinistreModel
         return $stmt->rowCount() > 0;
     }
 
-    public function updateQuantiteEtat(int $id, int $quantite, ?int $id_etat = null): bool
+    public function updateQuantiteEtat(int $id, ?int $quantite = null, ?int $id_etat = null): bool
     {
-        $fields = ['quantite = ?'];
-        $params = [$quantite];
+        $fields = [];
+        $params = [];
+
+        if ($quantite !== null) {
+            $fields[] = 'quantite = ?';
+            $params[] = $quantite;
+        }
 
         if ($id_etat !== null) {
             $fields[] = 'id_etat = ?';
             $params[] = $id_etat;
+        }
+
+        if (empty($fields)) {
+            return false;
         }
 
         $params[] = $id;
@@ -91,25 +100,52 @@ class SinistreModel
     }
 
     /**
-     * Met à jour toutes les sinistres associées à un objet : met la quantité à 0 et
-     * applique l'état fourni (ex: 'satisfait'). Retourne le nombre de lignes modifiées.
-     * @param int $id_objet
-     * @param int|null $id_etat
-     * @return int
+     * Retourne le montant total (quantite * prix) pour tous les sinistres disposant d'un prix.
      */
-    public function markAllByObjetAsSatisfied(int $id_objet, ?int $id_etat = null): int
+    public function getTotalMontantGlobal(): float
     {
-        $fields = ['quantite = 0'];
-        $params = [];
-        if ($id_etat !== null) {
-            $fields[] = 'id_etat = ?';
-            $params[] = $id_etat;
+        $sql = "SELECT SUM(s.quantite * o.prix_unitaire) AS total
+            FROM BNGRC_sinistre s
+            JOIN BNGRC_objet o ON s.id_objet = o.id
+            WHERE s.quantite > 0 AND o.prix_unitaire IS NOT NULL";
+        $stmt = $this->db->query($sql);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row === false || $row['total'] === null) {
+            return 0.0;
+        }
+        return (float)$row['total'];
+    }
+
+    /**
+     * Retourne un tableau des montants regroupes par etat (indexe par id_etat).
+     */
+    public function getMontantsParEtat(): array
+    {
+        $sql = "SELECT s.id_etat, SUM(s.quantite * o.prix_unitaire) AS total
+            FROM BNGRC_sinistre s
+            JOIN BNGRC_objet o ON s.id_objet = o.id
+            WHERE s.quantite > 0 AND o.prix_unitaire IS NOT NULL
+            GROUP BY s.id_etat";
+        $stmt = $this->db->query($sql);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $totals = [];
+        foreach ($rows as $row) {
+            if ($row['total'] === null) {
+                continue;
+            }
+            $totals[(int)$row['id_etat']] = (float)$row['total'];
         }
 
-        $params[] = $id_objet;
-        $sql = 'UPDATE BNGRC_sinistre SET ' . implode(', ', $fields) . ' WHERE id_objet = ?';
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute($params);
-        return $stmt->rowCount();
+        return $totals;
+    }
+
+    /**
+     * Compatibilite : total restant = montant regroupe pour l'etat 1 (non satisfait).
+     */
+    public function getTotalMontantRestant(): float
+    {
+        $totauxParEtat = $this->getMontantsParEtat();
+        return $totauxParEtat[1] ?? 0.0;
     }
 }

@@ -134,6 +134,10 @@ class DonsController
                 $etatSatisfaitId = $this->getEtatIdByName('satisfait') ?? 2;
 
                 foreach ($sinistres as &$sinistre) {
+                    $etatNom = isset($sinistre['etat']) ? trim(mb_strtolower($sinistre['etat'])) : '';
+                    if ($etatNom === 'satisfait') {
+                        continue;
+                    }
                     $sinQty = (int)($sinistre['quantite'] ?? 0);
                     if ($sinQty <= 0) {
                         continue;
@@ -168,7 +172,8 @@ class DonsController
 
                         $this->donModel->updateQuantite((int)$don['id'], max($donQty, 0));
                         $newEtatId = $sinQty <= 0 ? $etatSatisfaitId : (int)($sinistre['id_etat'] ?? 1);
-                        $this->sinistreModel->updateQuantiteEtat((int)$sinistre['id'], max($sinQty, 0), $newEtatId);
+                        $newQtyValue = $sinQty > 0 ? $sinQty : null;
+                        $this->sinistreModel->updateQuantiteEtat((int)$sinistre['id'], $newQtyValue, $newEtatId);
 
                         $results[] = [
                             'don' => [
@@ -264,10 +269,10 @@ class DonsController
             WHERE u.id IS NOT NULL
             ORDER BY b.id, u.id
         ';
-        
+
         $stmt = $this->app->db()->query($query);
         $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        
+
         $unitesByBesoin = [];
         foreach ($results as $row) {
             $besoinId = $row['besoin_id'];
@@ -277,7 +282,7 @@ class DonsController
             }
             $unitesByBesoin[$besoinId][] = $uniteId;
         }
-        
+
         return $unitesByBesoin;
     }
 

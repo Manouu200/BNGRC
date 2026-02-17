@@ -44,6 +44,16 @@ $router->post('/achat/buy', function () use ($app) {
     $controller->buy();
 });
 
+$router->get('/recapitulation', function () use ($app) {
+    $controller = new \app\controllers\RecapitulationController($app);
+    $controller->show();
+});
+
+$router->get('/recapitulation/stats', function () use ($app) {
+    $controller = new \app\controllers\RecapitulationController($app);
+    $controller->stats();
+});
+
 $router->post('/dons/create', function () use ($app) {
     $controller = new \app\controllers\DonsController($app);
     $controller->createDon();

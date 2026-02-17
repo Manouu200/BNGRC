@@ -82,7 +82,7 @@ return [
 		'host'     => '127.0.0.1',
 		'dbname'   => 'BNGRC',      // change si besoin
 		'user'     => 'root',      // change si besoin
-		'password' => 'password',          // mot de passe MySQL
+		'password' => '',          // mot de passe MySQL
 	],
 
 

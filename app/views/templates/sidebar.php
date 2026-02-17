@@ -43,11 +43,19 @@ $currentPage = basename($_SERVER['REQUEST_URI'], '?');
                 </a>
             </li>
             <li class="nav-item">
+
                 <a href="<?php echo BASE_URL; ?>/simulation" class="nav-link <?php echo strpos($currentPage, 'simulation') !== false ? 'active' : ''; ?>">
                     <span class="nav-icon">🔄</span>
                     <span class="nav-label">Simulation</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="<?php echo BASE_URL; ?>/recapitulation" class="nav-link <?php echo strpos($currentPage, 'recapitulation') !== false ? 'active' : ''; ?>">
+                    <span class="nav-icon">🧾</span>
+                    <span class="nav-label">Récapitulation</span>
+                </a>
+            </li>
+
         </ul>
 
     </div>

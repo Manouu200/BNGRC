@@ -19,16 +19,16 @@ class AchatModel
      * @param string|null $date
      * @return int
      */
-    public function insert(int $id_objet, ?string $date = null): int
+    public function insert(int $id_objet, int $quantite, float $montantTotal, ?string $date = null): int
     {
         if ($date !== null && $date !== '') {
-            $sql = "INSERT INTO BNGRC_achat (id_objet, date) VALUES (?, ?)";
+            $sql = "INSERT INTO BNGRC_achat (id_objet, quantite, montant_total, date) VALUES (?, ?, ?, ?)";
             $stmt = $this->db->prepare($sql);
-            $stmt->execute([$id_objet, $date]);
+            $stmt->execute([$id_objet, $quantite, $montantTotal, $date]);
         } else {
-            $sql = "INSERT INTO BNGRC_achat (id_objet) VALUES (?)";
+            $sql = "INSERT INTO BNGRC_achat (id_objet, quantite, montant_total) VALUES (?, ?, ?)";
             $stmt = $this->db->prepare($sql);
-            $stmt->execute([$id_objet]);
+            $stmt->execute([$id_objet, $quantite, $montantTotal]);
         }
         return (int)$this->db->lastInsertId();
     }
@@ -39,8 +39,9 @@ class AchatModel
      */
     public function getAll(): array
     {
-        $sql = "SELECT a.id, a.id_objet, a.date, o.libellee AS objet, b.nom AS besoin, u.nom AS unite,
-            o.prix_unitaire AS prix_unitaire, s.id_ville AS id_ville, v.nom AS ville
+        $sql = "SELECT a.id, a.id_objet, a.quantite, a.montant_total, a.date,
+                o.libellee AS objet, b.nom AS besoin, u.nom AS unite,
+                o.prix_unitaire AS prix_unitaire, s.id_ville AS id_ville, v.nom AS ville
             FROM BNGRC_achat a
             JOIN BNGRC_objet o ON a.id_objet = o.id
             JOIN BNGRC_besoins b ON o.id_besoins = b.id
@@ -50,6 +51,19 @@ class AchatModel
             ORDER BY a.date DESC";
         $stmt = $this->db->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Retourne la somme des montants dépensés pour les achats effectués.
+     */
+    public function getTotalMontant(): float
+    {
+        $stmt = $this->db->query('SELECT SUM(montant_total) AS total FROM BNGRC_achat');
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row === false || $row['total'] === null) {
+            return 0.0;
+        }
+        return (float)$row['total'];
     }
 
     /**
