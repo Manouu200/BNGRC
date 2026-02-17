@@ -87,7 +87,7 @@ class HomeController
     public function createSinistre()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->app->redirect('/');
+            $this->app->redirect(BASE_URL . '/');
             return;
         }
 
@@ -114,7 +114,7 @@ class HomeController
 
         // Simple validation
         if ($id_objet <= 0 || $id_ville <= 0) {
-            $this->app->redirect('/?created=0');
+            $this->app->redirect(BASE_URL . '/?created=0');
             return;
         }
 
@@ -130,9 +130,9 @@ class HomeController
             }
             $_SESSION['created_besoins'][] = $newId;
             
-            $this->app->redirect('/?created=1');
+            $this->app->redirect(BASE_URL . '/?created=1');
         } catch (\Throwable $e) {
-            $this->app->redirect('/?created=0');
+            $this->app->redirect(BASE_URL . '/?created=0');
         }
     }
 
@@ -155,6 +155,6 @@ class HomeController
             $_SESSION['created_besoins'] = [];
         }
 
-        $this->app->redirect('/?reset=' . $deletedCount);
+        $this->app->redirect(BASE_URL . '/?reset=' . $deletedCount);
     }
 }

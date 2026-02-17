@@ -27,36 +27,31 @@ class SimulationController
      */
     public function showSimulation(): void
     {
-        try {
-            $dons = $this->donModel->getForDispatch();
-            $sinistres = $this->sinistreModel->get();
-            $villes = $this->villeModel->get();
+        $dons = $this->donModel->getForDispatch();
+        $sinistres = $this->sinistreModel->get();
+        $villes = $this->villeModel->get();
 
-            // Filtrer les sinistres dont le besoin n'est pas 'Argent' et quantite > 0
-            $sinistresFiltered = array_filter($sinistres, function ($s) {
-                $besoin = isset($s['besoin']) ? trim(mb_strtolower($s['besoin'])) : '';
-                $qty = (int)($s['quantite'] ?? 0);
-                return $besoin !== 'argent' && $qty > 0;
-            });
+        // Filtrer les sinistres dont le besoin n'est pas 'Argent' et quantite > 0
+        $sinistresFiltered = array_filter($sinistres, function ($s) {
+            $besoin = isset($s['besoin']) ? trim($this->toLower($s['besoin'])) : '';
+            $qty = (int)($s['quantite'] ?? 0);
+            return $besoin !== 'argent' && $qty > 0;
+        });
 
-            // Filtrer les dons dont le besoin n'est pas 'Argent' et quantite > 0
-            $donsFiltered = array_filter($dons, function ($d) {
-                $besoin = isset($d['besoin']) ? trim(mb_strtolower($d['besoin'])) : '';
-                $qty = (int)($d['quantite'] ?? 0);
-                return $besoin !== 'argent' && $qty > 0;
-            });
+        // Filtrer les dons dont le besoin n'est pas 'Argent' et quantite > 0
+        $donsFiltered = array_filter($dons, function ($d) {
+            $besoin = isset($d['besoin']) ? trim($this->toLower($d['besoin'])) : '';
+            $qty = (int)($d['quantite'] ?? 0);
+            return $besoin !== 'argent' && $qty > 0;
+        });
 
-            $this->app->render('simulation.php', [
-                'dons' => array_values($donsFiltered),
-                'sinistres' => array_values($sinistresFiltered),
-                'villes' => $villes,
-                'simulationResults' => null,
-                'simulationStatus' => null,
-            ]);
-        } catch (\Throwable $e) {
-            echo '<pre>DEBUG ERROR: ' . $e->getMessage() . "\n" . $e->getFile() . ':' . $e->getLine() . "\n" . $e->getTraceAsString() . '</pre>';
-            exit;
-        }
+        $this->app->render('simulation.php', [
+            'dons' => array_values($donsFiltered),
+            'sinistres' => array_values($sinistresFiltered),
+            'villes' => $villes,
+            'simulationResults' => null,
+            'simulationStatus' => null,
+        ]);
     }
 
     /**
@@ -65,7 +60,7 @@ class SimulationController
     public function simulate(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->app->redirect('/simulation');
+            $this->app->redirect(BASE_URL . '/simulation');
             return;
         }
 
@@ -81,7 +76,7 @@ class SimulationController
     public function validate(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->app->redirect('/simulation');
+            $this->app->redirect(BASE_URL . '/simulation');
             return;
         }
 
@@ -102,13 +97,13 @@ class SimulationController
 
         // Filtrer : exclure 'Argent' et quantite <= 0
         $sinistresFiltered = array_filter($sinistres, function ($s) {
-            $besoin = isset($s['besoin']) ? trim(mb_strtolower($s['besoin'])) : '';
+            $besoin = isset($s['besoin']) ? trim($this->toLower($s['besoin'])) : '';
             $qty = (int)($s['quantite'] ?? 0);
             return $besoin !== 'argent' && $qty > 0;
         });
 
         $donsFiltered = array_filter($dons, function ($d) {
-            $besoin = isset($d['besoin']) ? trim(mb_strtolower($d['besoin'])) : '';
+            $besoin = isset($d['besoin']) ? trim($this->toLower($d['besoin'])) : '';
             $qty = (int)($d['quantite'] ?? 0);
             return $besoin !== 'argent' && $qty > 0;
         });
@@ -140,12 +135,12 @@ class SimulationController
 
             // Filtrer : exclure 'Argent' et quantite <= 0
             $dons = array_filter($dons, function ($d) {
-                $besoin = isset($d['besoin']) ? trim(mb_strtolower($d['besoin'])) : '';
+                $besoin = isset($d['besoin']) ? trim($this->toLower($d['besoin'])) : '';
                 return $besoin !== 'argent' && (int)($d['quantite'] ?? 0) > 0;
             });
 
             $sinistres = array_filter($sinistres, function ($s) {
-                $besoin = isset($s['besoin']) ? trim(mb_strtolower($s['besoin'])) : '';
+                $besoin = isset($s['besoin']) ? trim($this->toLower($s['besoin'])) : '';
                 return $besoin !== 'argent' && (int)($s['quantite'] ?? 0) > 0;
             });
 
@@ -285,7 +280,18 @@ class SimulationController
      */
     protected function labelsMatch(string $a, string $b): bool
     {
-        return mb_strtolower(trim($a)) === mb_strtolower(trim($b));
+        return $this->toLower(trim($a)) === $this->toLower(trim($b));
+    }
+
+    /**
+     * Convertit en minuscules de manière sûre (avec ou sans mbstring)
+     */
+    protected function toLower(string $value): string
+    {
+        if (function_exists('mb_strtolower')) {
+            return mb_strtolower($value, 'UTF-8');
+        }
+        return strtolower($value);
     }
 
     /**
