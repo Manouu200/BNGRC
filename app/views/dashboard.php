@@ -36,16 +36,62 @@
                             <a href="<?php echo BASE_URL; ?>/" class="btn btn-primary">
                                 <span>➕</span> Ajouter un Besoin
                             </a>
-                            <form method="post" action="<?php echo BASE_URL; ?>/dons/dispatch" style="display: inline-flex; align-items: center; gap: 0.5rem;">
-                                <select name="priority" class="form-select" style="padding: 0.5rem; border-radius: 4px; border: 1px solid #ccc;">
-                                    <option value="quantite">🔢 Priorité: Plus petite quantité</option>
-                                    <option value="date">📅 Priorité: Plus ancienne date</option>
+                            <form method="post" action="<?php echo BASE_URL; ?>/dons/dispatch" style="display: inline-flex; align-items: center; gap: 0.5rem;" id="dispatch-form">
+                                <select name="dispatch_mode" id="dispatch-mode-select" class="form-select" style="padding: 0.5rem; border-radius: 4px; border: 1px solid #ccc;">
+                                    <option value="date">📅 Mode: Date</option>
+                                    <option value="quantite">🔢 Mode: Quantité</option>
+                                    <option value="proportionnel">⚖️ Mode: Proportionnel</option>
+                                </select>
+                                <select name="dispatch_order" id="dispatch-order-select" class="form-select" style="padding: 0.5rem; border-radius: 4px; border: 1px solid #ccc;">
+                                    <option value="asc" data-mode="date">📆 Plus ancien d'abord</option>
+                                    <option value="desc" data-mode="date">📆 Plus récent d'abord</option>
+                                    <option value="asc" data-mode="quantite" style="display:none;">📉 Plus petite quantité</option>
+                                    <option value="desc" data-mode="quantite" style="display:none;">📈 Plus grande quantité</option>
                                 </select>
                                 <button type="submit" class="btn btn-outline-primary" title="Distribuer les dons vers les besoins correspondants">
                                     ⤴ Dispatcher les dons
                                 </button>
                             </form>
                         </div>
+                        <script>
+                        (function() {
+                            var modeSelect = document.getElementById('dispatch-mode-select');
+                            var orderSelect = document.getElementById('dispatch-order-select');
+                            
+                            function updateOrderOptions() {
+                                var mode = modeSelect.value;
+                                var options = orderSelect.querySelectorAll('option');
+                                var firstVisible = null;
+                                
+                                options.forEach(function(opt) {
+                                    var optMode = opt.getAttribute('data-mode');
+                                    if (mode === 'proportionnel') {
+                                        // Hide all order options for proportional mode
+                                        opt.style.display = 'none';
+                                    } else if (optMode === mode) {
+                                        opt.style.display = 'block';
+                                        if (!firstVisible) firstVisible = opt;
+                                    } else {
+                                        opt.style.display = 'none';
+                                    }
+                                });
+                                
+                                // Reset selection to first visible or hide select
+                                if (mode === 'proportionnel') {
+                                    orderSelect.style.display = 'none';
+                                } else {
+                                    orderSelect.style.display = 'block';
+                                    if (firstVisible && orderSelect.selectedOptions[0].style.display === 'none') {
+                                        orderSelect.value = firstVisible.value;
+                                    }
+                                }
+                            }
+                            
+                            modeSelect.addEventListener('change', updateOrderOptions);
+                            // Initialize on load
+                            updateOrderOptions();
+                        })();
+                        </script>
                     </div>
 
                     <!-- Dispatch Results Section -->
@@ -143,6 +189,7 @@
                                             <th>📝 Libellé</th>
                                             <th style="text-align: center;">📊 Quantité</th>
                                             <th>📏 Unité</th>
+                                            <th style="text-align: right;">💰 Prix Total</th>
                                             <th>📅 Date</th>
 
                                         </tr>
@@ -164,6 +211,12 @@
                                                     <strong><?php echo htmlspecialchars((string)($d['quantite'] ?? '')); ?></strong>
                                                 </td>
                                                 <td><?php echo htmlspecialchars($d['unite'] ?? ''); ?></td>
+                                                <td style="text-align: right; font-weight: 600; color: #2e7d32;">
+                                                    <?php 
+                                                        $prixTotal = (float)($d['quantite'] ?? 0) * (float)($d['prix_unitaire'] ?? 0);
+                                                        echo $prixTotal > 0 ? number_format($prixTotal, 2, ',', ' ') . ' Ar' : '—';
+                                                    ?>
+                                                </td>
                                                 <td><?php echo htmlspecialchars($d['date'] ?? ''); ?></td>
                                                 <td style="text-align: center;">
                                                     <div class="table-actions">
@@ -215,6 +268,7 @@
                                             <th>📝 Libellé</th>
                                             <th style="text-align: center;">📊 Quantité</th>
                                             <th>📏 Unité</th>
+                                            <th style="text-align: right;">💰 Prix Total</th>
                                             <th>📅 Date</th>
                                             <th>⚙️ Etat</th>
                                         </tr>
@@ -236,6 +290,12 @@
                                                     <strong><?php echo htmlspecialchars((string)($s['quantite'] ?? '')); ?></strong>
                                                 </td>
                                                 <td><?php echo htmlspecialchars($s['unite'] ?? ''); ?></td>
+                                                <td style="text-align: right; font-weight: 600; color: #2e7d32;">
+                                                    <?php 
+                                                        $prixTotalBesoin = (float)($s['quantite'] ?? 0) * (float)($s['prix_unitaire'] ?? 0);
+                                                        echo $prixTotalBesoin > 0 ? number_format($prixTotalBesoin, 2, ',', ' ') . ' Ar' : '—';
+                                                    ?>
+                                                </td>
                                                 <td><?php echo htmlspecialchars($s['date'] ?? ''); ?></td>
                                                 <td>
                                                     <span class="badge badge-info">

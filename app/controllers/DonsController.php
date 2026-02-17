@@ -129,28 +129,30 @@ class DonsController
             });
             $sinistres = array_values($sinistres);
 
-            // Récupérer le critère de priorité (quantite ou date)
-            $priority = isset($_POST['priority']) ? $_POST['priority'] : 'quantite';
+            // Récupérer le mode de dispatch et l'ordre
+            $dispatchMode = isset($_POST['dispatch_mode']) ? $_POST['dispatch_mode'] : 'date';
+            $dispatchOrder = isset($_POST['dispatch_order']) ? $_POST['dispatch_order'] : 'asc';
 
-            // Trier les sinistres selon le critère choisi
+            // Trier les sinistres selon le mode et l'ordre choisis
             if (!empty($sinistres)) {
-                usort($sinistres, function ($a, $b) use ($priority) {
-                    if ($priority === 'quantite') {
-                        // Priorité aux besoins avec la plus petite quantité
+                usort($sinistres, function ($a, $b) use ($dispatchMode, $dispatchOrder) {
+                    if ($dispatchMode === 'quantite') {
                         $qtyA = (int)($a['quantite'] ?? 0);
                         $qtyB = (int)($b['quantite'] ?? 0);
                         if ($qtyA === $qtyB) {
                             return ($a['id'] ?? 0) <=> ($b['id'] ?? 0);
                         }
-                        return $qtyA <=> $qtyB;
+                        // asc = plus petite quantité d'abord, desc = plus grande d'abord
+                        return $dispatchOrder === 'asc' ? ($qtyA <=> $qtyB) : ($qtyB <=> $qtyA);
                     } else {
-                        // Priorité aux besoins les plus anciens (par date)
+                        // Mode date (par défaut) ou proportionnel (utilise aussi le tri par date)
                         $dateA = isset($a['date']) ? strtotime($a['date']) : 0;
                         $dateB = isset($b['date']) ? strtotime($b['date']) : 0;
                         if ($dateA === $dateB) {
                             return ($a['id'] ?? 0) <=> ($b['id'] ?? 0);
                         }
-                        return $dateA <=> $dateB;
+                        // asc = plus ancien d'abord, desc = plus récent d'abord
+                        return $dispatchOrder === 'asc' ? ($dateA <=> $dateB) : ($dateB <=> $dateA);
                     }
                 });
             }
@@ -174,66 +176,219 @@ class DonsController
                     $sinistresLocal[$s['id']]['quantite'] = (int)$s['quantite'];
                 }
 
-                foreach ($sinistresLocal as $sinId => &$sinistre) {
-                    $sinQty = (int)$sinistre['quantite'];
-                    if ($sinQty <= 0) {
-                        continue;
+                // Mode proportionnel : répartir les dons proportionnellement entre tous les besoins correspondants
+                if ($dispatchMode === 'proportionnel') {
+                    // Grouper les dons par libellé
+                    $donsByLibelle = [];
+                    foreach ($donsLocal as $donId => $don) {
+                        $libelleKey = trim($this->toLower($don['libellee'] ?? ''));
+                        if ($libelleKey === '') continue;
+                        if (!isset($donsByLibelle[$libelleKey])) {
+                            $donsByLibelle[$libelleKey] = [];
+                        }
+                        $donsByLibelle[$libelleKey][$donId] = $don;
                     }
 
-                    foreach ($donsLocal as $donId => &$don) {
-                        $donQty = (int)($don['quantite'] ?? 0);
-                        if ($donQty <= 0) {
-                            continue;
+                    // Grouper les besoins par libellé
+                    $besoinsByLibelle = [];
+                    foreach ($sinistresLocal as $sinId => $sinistre) {
+                        $libelleKey = trim($this->toLower($sinistre['libellee'] ?? ''));
+                        if ($libelleKey === '') continue;
+                        if (!isset($besoinsByLibelle[$libelleKey])) {
+                            $besoinsByLibelle[$libelleKey] = [];
+                        }
+                        $besoinsByLibelle[$libelleKey][$sinId] = $sinistre;
+                    }
+
+                    // Pour chaque libellé commun, répartir proportionnellement
+                    foreach ($donsByLibelle as $libelleKey => $donsGroupe) {
+                        if (!isset($besoinsByLibelle[$libelleKey])) continue;
+                        
+                        $besoinsGroupe = $besoinsByLibelle[$libelleKey];
+                        $totalBesoins = count($besoinsGroupe);
+                        $totalDonsGroupe = count($donsGroupe);
+                        
+                        if ($totalBesoins === 0 || $totalDonsGroupe === 0) continue;
+
+                        // Calculer la quantité totale disponible dans les dons pour ce libellé
+                        $totalQtyDons = 0;
+                        foreach ($donsGroupe as $don) {
+                            $totalQtyDons += (int)$don['quantite'];
                         }
 
-                        // Règle: même libellé uniquement (comme simulation)
-                        if (!$this->labelsMatch($sinistre['libellee'] ?? '', $don['libellee'] ?? '')) {
-                            continue;
+                        // Calculer la quantité totale demandée par les besoins pour ce libellé
+                        $totalQtyBesoins = 0;
+                        foreach ($besoinsGroupe as $besoin) {
+                            $totalQtyBesoins += (int)$besoin['quantite'];
                         }
 
-                        $dispatchQty = min($donQty, $sinQty);
-                        if ($dispatchQty <= 0) {
-                            continue;
+                        if ($totalQtyDons === 0 || $totalQtyBesoins === 0) continue;
+
+                        // Formule: (nombre de besoins / nombre total de besoins) * nombre total de dons disponibles
+                        // Chaque besoin reçoit une part proportionnelle de la quantité totale des dons
+                        $besoinsSelectionnes = isset($_POST['besoins_selectionnes']) ? (int)$_POST['besoins_selectionnes'] : $totalBesoins;
+                        if ($besoinsSelectionnes <= 0 || $besoinsSelectionnes > $totalBesoins) {
+                            $besoinsSelectionnes = $totalBesoins;
                         }
 
-                        $preDonQty = $donQty;
-                        $preSinQty = $sinQty;
+                        // Calculer le nombre de dons à utiliser pour ce groupe
+                        // Formule: (besoins sélectionnés / total besoins) * total dons disponibles
+                        $donsAUtiliser = (int) floor(($besoinsSelectionnes / $totalBesoins) * $totalDonsGroupe);
+                        if ($donsAUtiliser <= 0) $donsAUtiliser = 1;
+                        if ($donsAUtiliser > $totalDonsGroupe) $donsAUtiliser = $totalDonsGroupe;
 
-                        $donQty -= $dispatchQty;
-                        $sinQty -= $dispatchQty;
+                        // Prendre les premiers dons à utiliser
+                        $donsGroupeArray = array_values($donsGroupe);
+                        $donsGroupeArray = array_slice($donsGroupeArray, 0, $donsAUtiliser);
 
-                        $don['quantite'] = $donQty;
-                        $sinistre['quantite'] = $sinQty;
+                        // Recalculer la quantité totale des dons à utiliser
+                        $qtyDonsADistribuer = 0;
+                        foreach ($donsGroupeArray as $don) {
+                            $qtyDonsADistribuer += (int)$don['quantite'];
+                        }
 
-                        $this->donModel->updateQuantite((int)$don['id'], max($donQty, 0));
-                        $newEtatId = $sinQty <= 0 ? $etatSatisfaitId : (int)($sinistre['id_etat'] ?? 1);
-                        // Stocker 0 au lieu de null pour que l'élément reste visible
-                        $this->sinistreModel->updateQuantiteEtat((int)$sinistre['id'], max($sinQty, 0), $newEtatId);
+                        // Limiter les besoins aux premiers sélectionnés
+                        $besoinsGroupeArray = array_values($besoinsGroupe);
+                        $besoinsGroupeArray = array_slice($besoinsGroupeArray, 0, $besoinsSelectionnes);
 
-                        $results[] = [
-                            'don' => [
-                                'id' => $don['id'],
-                                'ville' => $don['ville'],
-                                'besoin' => $don['besoin'],
-                                'libellee' => $don['libellee'],
-                                'quantite_avant' => $preDonQty,
-                                'quantite_apres' => $donQty,
-                                'unite' => $don['unite'],
-                            ],
-                            'sinistre' => [
-                                'id' => $sinistre['id'],
-                                'ville' => $sinistre['ville'],
-                                'besoin' => $sinistre['besoin'],
-                                'libellee' => $sinistre['libellee'],
-                                'quantite_avant' => $preSinQty,
-                                'quantite_apres' => $sinQty,
-                                'etat' => $sinQty <= 0 ? 'satisfait' : ($sinistre['etat'] ?? 'insatisfait'),
-                            ],
-                            'dispatched' => $dispatchQty,
-                        ];
+                        // Distribuer proportionnellement la quantité aux besoins sélectionnés
+                        $qtyRestante = $qtyDonsADistribuer;
+                        $totalQtyBesoinsSelectionnes = 0;
+                        foreach ($besoinsGroupeArray as $besoin) {
+                            $totalQtyBesoinsSelectionnes += (int)$besoin['quantite'];
+                        }
 
+                        foreach ($besoinsGroupeArray as $besoin) {
+                            if ($qtyRestante <= 0) break;
+                            
+                            $besoinQty = (int)$besoin['quantite'];
+                            $besoinId = $besoin['id'];
+                            
+                            // Part proportionnelle pour ce besoin
+                            $partProportionnelle = ($totalQtyBesoinsSelectionnes > 0) 
+                                ? (int) floor(($besoinQty / $totalQtyBesoinsSelectionnes) * $qtyDonsADistribuer)
+                                : 0;
+                            
+                            // Ne pas dépasser la quantité demandée par le besoin ni la quantité restante
+                            $qtyADonner = min($partProportionnelle, $besoinQty, $qtyRestante);
+                            
+                            if ($qtyADonner <= 0) continue;
+
+                            // Identifier quel don utiliser (premier don disponible avec quantité)
+                            foreach ($donsGroupeArray as &$donSource) {
+                                $donId = $donSource['id'];
+                                $donQtyDisponible = (int)($donsLocal[$donId]['quantite'] ?? 0);
+                                if ($donQtyDisponible <= 0) continue;
+
+                                $qtyTransfert = min($qtyADonner, $donQtyDisponible);
+                                if ($qtyTransfert <= 0) continue;
+
+                                $preDonQty = $donQtyDisponible;
+                                $preSinQty = (int)($sinistresLocal[$besoinId]['quantite'] ?? $besoinQty);
+
+                                // Mettre à jour les quantités locales
+                                $donsLocal[$donId]['quantite'] -= $qtyTransfert;
+                                $sinistresLocal[$besoinId]['quantite'] -= $qtyTransfert;
+
+                                $newDonQty = $donsLocal[$donId]['quantite'];
+                                $newSinQty = $sinistresLocal[$besoinId]['quantite'];
+
+                                // Mettre à jour en base
+                                $this->donModel->updateQuantite($donId, max($newDonQty, 0));
+                                $newEtatId = $newSinQty <= 0 ? $etatSatisfaitId : (int)($sinistresLocal[$besoinId]['id_etat'] ?? 1);
+                                $this->sinistreModel->updateQuantiteEtat($besoinId, max($newSinQty, 0), $newEtatId);
+
+                                $results[] = [
+                                    'don' => [
+                                        'id' => $donId,
+                                        'ville' => $donsLocal[$donId]['ville'] ?? '',
+                                        'besoin' => $donsLocal[$donId]['besoin'] ?? '',
+                                        'libellee' => $donsLocal[$donId]['libellee'] ?? '',
+                                        'quantite_avant' => $preDonQty,
+                                        'quantite_apres' => $newDonQty,
+                                        'unite' => $donsLocal[$donId]['unite'] ?? '',
+                                    ],
+                                    'sinistre' => [
+                                        'id' => $besoinId,
+                                        'ville' => $sinistresLocal[$besoinId]['ville'] ?? '',
+                                        'besoin' => $sinistresLocal[$besoinId]['besoin'] ?? '',
+                                        'libellee' => $sinistresLocal[$besoinId]['libellee'] ?? '',
+                                        'quantite_avant' => $preSinQty,
+                                        'quantite_apres' => $newSinQty,
+                                        'etat' => $newSinQty <= 0 ? 'satisfait' : ($sinistresLocal[$besoinId]['etat'] ?? 'insatisfait'),
+                                    ],
+                                    'dispatched' => $qtyTransfert,
+                                ];
+
+                                $qtyADonner -= $qtyTransfert;
+                                $qtyRestante -= $qtyTransfert;
+
+                                if ($qtyADonner <= 0) break;
+                            }
+                        }
+                    }
+                } else {
+                    // Mode standard (date ou quantité) : dispatch séquentiel
+                    foreach ($sinistresLocal as $sinId => &$sinistre) {
+                        $sinQty = (int)$sinistre['quantite'];
                         if ($sinQty <= 0) {
-                            break;
+                            continue;
+                        }
+
+                        foreach ($donsLocal as $donId => &$don) {
+                            $donQty = (int)($don['quantite'] ?? 0);
+                            if ($donQty <= 0) {
+                                continue;
+                            }
+
+                            // Règle: même libellé uniquement (comme simulation)
+                            if (!$this->labelsMatch($sinistre['libellee'] ?? '', $don['libellee'] ?? '')) {
+                                continue;
+                            }
+
+                            $dispatchQty = min($donQty, $sinQty);
+                            if ($dispatchQty <= 0) {
+                                continue;
+                            }
+
+                            $preDonQty = $donQty;
+                            $preSinQty = $sinQty;
+
+                            $donQty -= $dispatchQty;
+                            $sinQty -= $dispatchQty;
+
+                            $don['quantite'] = $donQty;
+                            $sinistre['quantite'] = $sinQty;
+
+                            $this->donModel->updateQuantite((int)$don['id'], max($donQty, 0));
+                            $newEtatId = $sinQty <= 0 ? $etatSatisfaitId : (int)($sinistre['id_etat'] ?? 1);
+                            $this->sinistreModel->updateQuantiteEtat((int)$sinistre['id'], max($sinQty, 0), $newEtatId);
+
+                            $results[] = [
+                                'don' => [
+                                    'id' => $don['id'],
+                                    'ville' => $don['ville'],
+                                    'besoin' => $don['besoin'],
+                                    'libellee' => $don['libellee'],
+                                    'quantite_avant' => $preDonQty,
+                                    'quantite_apres' => $donQty,
+                                    'unite' => $don['unite'],
+                                ],
+                                'sinistre' => [
+                                    'id' => $sinistre['id'],
+                                    'ville' => $sinistre['ville'],
+                                    'besoin' => $sinistre['besoin'],
+                                    'libellee' => $sinistre['libellee'],
+                                    'quantite_avant' => $preSinQty,
+                                    'quantite_apres' => $sinQty,
+                                    'etat' => $sinQty <= 0 ? 'satisfait' : ($sinistre['etat'] ?? 'insatisfait'),
+                                ],
+                                'dispatched' => $dispatchQty,
+                            ];
+
+                            if ($sinQty <= 0) {
+                                break;
+                            }
                         }
                     }
                 }

@@ -15,7 +15,7 @@ class DonModel
 
     public function get(): array
     {
-        $sql = "SELECT d.id, v.nom AS ville, b.nom AS besoin, o.libellee, d.quantite, u.nom AS unite, d.date
+        $sql = "SELECT d.id, v.nom AS ville, b.nom AS besoin, o.libellee, d.quantite, u.nom AS unite, d.date, o.prix_unitaire
             FROM BNGRC_dons d
             JOIN BNGRC_ville v ON d.id_ville = v.id
             JOIN BNGRC_objet o ON d.id_objet = o.id
