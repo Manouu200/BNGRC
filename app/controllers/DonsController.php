@@ -116,14 +116,42 @@ class DonsController
             $dons = $this->donModel->getForDispatch();
             $sinistres = $this->sinistreModel->get();
 
+            // Filtrer : exclure 'Argent' et quantite <= 0 (comme simulation)
+            $dons = array_filter($dons, function ($d) {
+                $besoin = isset($d['besoin']) ? trim(mb_strtolower($d['besoin'])) : '';
+                return $besoin !== 'argent' && (int)($d['quantite'] ?? 0) > 0;
+            });
+            $dons = array_values($dons);
+
+            $sinistres = array_filter($sinistres, function ($s) {
+                $besoin = isset($s['besoin']) ? trim(mb_strtolower($s['besoin'])) : '';
+                return $besoin !== 'argent' && (int)($s['quantite'] ?? 0) > 0;
+            });
+            $sinistres = array_values($sinistres);
+
+            // Récupérer le critère de priorité (quantite ou date)
+            $priority = isset($_POST['priority']) ? $_POST['priority'] : 'quantite';
+
+            // Trier les sinistres selon le critère choisi
             if (!empty($sinistres)) {
-                usort($sinistres, function ($a, $b) {
-                    $dateA = isset($a['date']) ? strtotime($a['date']) : 0;
-                    $dateB = isset($b['date']) ? strtotime($b['date']) : 0;
-                    if ($dateA === $dateB) {
-                        return ($a['id'] ?? 0) <=> ($b['id'] ?? 0);
+                usort($sinistres, function ($a, $b) use ($priority) {
+                    if ($priority === 'quantite') {
+                        // Priorité aux besoins avec la plus petite quantité
+                        $qtyA = (int)($a['quantite'] ?? 0);
+                        $qtyB = (int)($b['quantite'] ?? 0);
+                        if ($qtyA === $qtyB) {
+                            return ($a['id'] ?? 0) <=> ($b['id'] ?? 0);
+                        }
+                        return $qtyA <=> $qtyB;
+                    } else {
+                        // Priorité aux besoins les plus anciens (par date)
+                        $dateA = isset($a['date']) ? strtotime($a['date']) : 0;
+                        $dateB = isset($b['date']) ? strtotime($b['date']) : 0;
+                        if ($dateA === $dateB) {
+                            return ($a['id'] ?? 0) <=> ($b['id'] ?? 0);
+                        }
+                        return $dateA <=> $dateB;
                     }
-                    return $dateA <=> $dateB;
                 });
             }
 
@@ -133,26 +161,33 @@ class DonsController
                 $db->beginTransaction();
                 $etatSatisfaitId = $this->getEtatIdByName('satisfait') ?? 2;
 
-                foreach ($sinistres as &$sinistre) {
-                    $etatNom = isset($sinistre['etat']) ? trim(mb_strtolower($sinistre['etat'])) : '';
-                    if ($etatNom === 'satisfait') {
-                        continue;
-                    }
-                    $sinQty = (int)($sinistre['quantite'] ?? 0);
+                // Créer des copies locales indexées par id pour faciliter les modifications
+                $donsLocal = [];
+                foreach ($dons as $d) {
+                    $donsLocal[$d['id']] = $d;
+                    $donsLocal[$d['id']]['quantite'] = (int)$d['quantite'];
+                }
+
+                $sinistresLocal = [];
+                foreach ($sinistres as $s) {
+                    $sinistresLocal[$s['id']] = $s;
+                    $sinistresLocal[$s['id']]['quantite'] = (int)$s['quantite'];
+                }
+
+                foreach ($sinistresLocal as $sinId => &$sinistre) {
+                    $sinQty = (int)$sinistre['quantite'];
                     if ($sinQty <= 0) {
                         continue;
                     }
 
-                    foreach ($dons as &$don) {
+                    foreach ($donsLocal as $donId => &$don) {
                         $donQty = (int)($don['quantite'] ?? 0);
                         if ($donQty <= 0) {
                             continue;
                         }
 
-                        if (
-                            !$this->labelsMatch($sinistre['libellee'] ?? '', $don['libellee'] ?? '') ||
-                            !$this->citiesMatch($sinistre['ville'] ?? '', $don['ville'] ?? '')
-                        ) {
+                        // Règle: même libellé uniquement (comme simulation)
+                        if (!$this->labelsMatch($sinistre['libellee'] ?? '', $don['libellee'] ?? '')) {
                             continue;
                         }
 
@@ -172,8 +207,8 @@ class DonsController
 
                         $this->donModel->updateQuantite((int)$don['id'], max($donQty, 0));
                         $newEtatId = $sinQty <= 0 ? $etatSatisfaitId : (int)($sinistre['id_etat'] ?? 1);
-                        $newQtyValue = $sinQty > 0 ? $sinQty : null;
-                        $this->sinistreModel->updateQuantiteEtat((int)$sinistre['id'], $newQtyValue, $newEtatId);
+                        // Stocker 0 au lieu de null pour que l'élément reste visible
+                        $this->sinistreModel->updateQuantiteEtat((int)$sinistre['id'], max($sinQty, 0), $newEtatId);
 
                         $results[] = [
                             'don' => [

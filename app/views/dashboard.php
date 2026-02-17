@@ -36,7 +36,11 @@
                             <a href="<?php echo BASE_URL; ?>/" class="btn btn-primary">
                                 <span>➕</span> Ajouter un Besoin
                             </a>
-                            <form method="post" action="<?php echo BASE_URL; ?>/dons/dispatch" style="display: inline;">
+                            <form method="post" action="<?php echo BASE_URL; ?>/dons/dispatch" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                                <select name="priority" class="form-select" style="padding: 0.5rem; border-radius: 4px; border: 1px solid #ccc;">
+                                    <option value="quantite">🔢 Priorité: Plus petite quantité</option>
+                                    <option value="date">📅 Priorité: Plus ancienne date</option>
+                                </select>
                                 <button type="submit" class="btn btn-outline-primary" title="Distribuer les dons vers les besoins correspondants">
                                     ⤴ Dispatcher les dons
                                 </button>
@@ -117,13 +121,14 @@
 
 
                     <!-- Donations Table Section -->
+                    <?php $donsFiltered = array_filter($dons ?? [], fn($d) => (int)($d['quantite'] ?? 0) > 0); ?>
                     <div class="table-section">
                         <div class="table-header">
                             <div class="table-header-title">Listes des dons</div>
                             <div class="table-header-info">
                                 <div class="table-count">
                                     <span>Total:</span>
-                                    <span class="table-count-badge"><?php echo !empty($dons) ? count($dons) : '0'; ?></span>
+                                    <span class="table-count-badge"><?php echo count($donsFiltered); ?></span>
                                 </div>
                             </div>
                         </div>
@@ -144,6 +149,7 @@
                                     </thead>
                                     <tbody>
                                         <?php foreach ($dons as $d): ?>
+                                            <?php if ((int)($d['quantite'] ?? 0) <= 0) continue; ?>
                                             <tr>
                                                 <td>
                                                     <strong><?php echo htmlspecialchars($d['ville'] ?? 'N/A'); ?></strong>
@@ -180,20 +186,21 @@
                         <?php if (!empty($dons)): ?>
                             <div class="table-footer">
                                 <div class="table-footer-info">
-                                    Affichage de <strong><?php echo count($dons); ?></strong> don(s)
+                                    Affichage de <strong><?php echo count($donsFiltered); ?></strong> don(s)
                                 </div>
                             </div>
                         <?php endif; ?>
                     </div>
 
                     <!-- Data Table Section -->
+                    <?php $sinistresFiltered = array_filter($sinistres ?? [], fn($s) => (int)($s['quantite'] ?? 0) > 0); ?>
                     <div class="table-section">
                         <div class="table-header">
                             <div class="table-header-title">Liste des Besoins</div>
                             <div class="table-header-info">
                                 <div class="table-count">
                                     <span>Total:</span>
-                                    <span class="table-count-badge"><?php echo !empty($sinistres) ? count($sinistres) : '0'; ?></span>
+                                    <span class="table-count-badge"><?php echo count($sinistresFiltered); ?></span>
                                 </div>
                             </div>
                         </div>
@@ -214,6 +221,7 @@
                                     </thead>
                                     <tbody>
                                         <?php foreach ($sinistres as $s): ?>
+                                            <?php if ((int)($s['quantite'] ?? 0) <= 0) continue; ?>
                                             <tr>
                                                 <td>
                                                     <strong><?php echo htmlspecialchars($s['ville'] ?? 'N/A'); ?></strong>
@@ -256,7 +264,7 @@
                         <?php if (!empty($sinistres)): ?>
                             <div class="table-footer">
                                 <div class="table-footer-info">
-                                    Affichage de <strong><?php echo count($sinistres); ?></strong> besoin(s)
+                                    Affichage de <strong><?php echo count($sinistresFiltered); ?></strong> besoin(s)
                                 </div>
                                 <div class="table-pagination">
                                     <button class="btn btn-sm btn-outline-secondary" disabled>← Précédent</button>
