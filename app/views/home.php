@@ -153,6 +153,12 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                                     </div>
 
                                     <div class="form-group-wrapper">
+                                        <label class="form-label">Total Estimé</label>
+                                        <small style="display: block; color: #666; margin-bottom: 0.5rem;">Quantité × Prix Unitaire</small>
+                                        <input type="text" id="total-display" class="form-control" disabled placeholder="—" style="background-color: #e8f5e9; font-weight: 600; color: #2e7d32;">
+                                    </div>
+
+                                    <div class="form-group-wrapper">
                                         <label class="form-label">Date de Besoin</label>
                                         <small style="display: block; color: #666; margin-bottom: 0.5rem;">Quand ce besoin a-t-il été identifié?</small>
                                         <input type="datetime-local" name="date" class="form-control" value="<?php echo date('Y-m-d\TH:i'); ?>">
@@ -201,6 +207,8 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                     var uniteSelect = document.getElementById('unite-select');
                     var prixDisplay = document.getElementById('prix-display');
                     var prixHidden = document.getElementById('prix-hidden');
+                    var totalDisplay = document.getElementById('total-display');
+                    var quantiteInput = document.querySelector('input[name="quantite"]');
 
                     function formatPrix(v) {
                         var n = Number(v);
@@ -209,6 +217,18 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2
                         }) + ' Ar';
+                    }
+
+                    function calculateTotal() {
+                        if (!totalDisplay || !quantiteInput || !prixHidden) return;
+                        var quantite = parseFloat(quantiteInput.value) || 0;
+                        var prix = parseFloat(prixHidden.value) || 0;
+                        var total = quantite * prix;
+                        if (total > 0) {
+                            totalDisplay.value = formatPrix(total);
+                        } else {
+                            totalDisplay.value = '';
+                        }
                     }
 
                     function filterUnitesByBesoin() {
@@ -297,6 +317,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                                 prixHidden.value = prix || '';
                             }
                         }
+                        calculateTotal();
                     }
 
                     if (besoinSelect) {
@@ -311,6 +332,10 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                         window.addEventListener('load', function() {
                             setTimeout(syncFromObjet, 10);
                         });
+                    }
+
+                    if (quantiteInput) {
+                        quantiteInput.addEventListener('input', calculateTotal);
                     }
                 })();
             </script>
