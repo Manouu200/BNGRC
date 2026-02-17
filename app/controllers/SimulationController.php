@@ -162,7 +162,13 @@ class SimulationController
                     $dateA = isset($a['date']) ? strtotime($a['date']) : 0;
                     $dateB = isset($b['date']) ? strtotime($b['date']) : 0;
                     if ($dateA === $dateB) {
-                        return ($a['id'] ?? 0) <=> ($b['id'] ?? 0);
+                        // En cas de même date, trier par ordre de priorité
+                        $ordreA = (int)($a['ordre'] ?? 0);
+                        $ordreB = (int)($b['ordre'] ?? 0);
+                        if ($ordreA === $ordreB) {
+                            return ($a['id'] ?? 0) <=> ($b['id'] ?? 0);
+                        }
+                        return $ordreA <=> $ordreB;
                     }
                     return $dateA <=> $dateB;
                 }

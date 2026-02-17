@@ -184,8 +184,7 @@
                                 <table class="table table-striped table-hover">
                                     <thead>
                                         <tr>
-                                            <th>📍 Ville</th>
-                                            <th>📋 Type de Besoin</th>
+                                            <th> Type de Besoin</th>
                                             <th>📝 Libellé</th>
                                             <th style="text-align: center;">📊 Quantité</th>
                                             <th>📏 Unité</th>
@@ -198,9 +197,6 @@
                                         <?php foreach ($dons as $d): ?>
                                             <?php if ((int)($d['quantite'] ?? 0) <= 0) continue; ?>
                                             <tr>
-                                                <td>
-                                                    <strong><?php echo htmlspecialchars($d['ville'] ?? 'N/A'); ?></strong>
-                                                </td>
                                                 <td>
                                                     <span class="badge badge-success">
                                                         <?php echo htmlspecialchars($d['besoin'] ?? 'N/A'); ?>
