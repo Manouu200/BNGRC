@@ -4,22 +4,32 @@ namespace app\controllers;
 
 use flight\Engine;
 use app\models\SinistreModel;
+use app\models\DonModel;
 
 class RecapitulationController
 {
     protected Engine $app;
     protected SinistreModel $sinistreModel;
+    protected DonModel $donModel;
 
     public function __construct($app)
     {
         $this->app = $app;
         $this->sinistreModel = new SinistreModel($this->app->db());
+        $this->donModel = new DonModel($this->app->db());
     }
 
     public function show(): void
     {
         $stats = $this->collectStats();
         $stats['lastUpdated'] = date('Y-m-d H:i:s');
+        
+        // Récupérer tous les besoins (sinistres) pour le tableau
+        $stats['besoins'] = $this->sinistreModel->get();
+        
+        // Récupérer tous les dons pour le tableau
+        $stats['dons'] = $this->donModel->get();
+        
         $this->app->render('recapitulation.php', $stats);
     }
 

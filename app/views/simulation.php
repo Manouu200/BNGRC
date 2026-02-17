@@ -254,19 +254,6 @@
                         </div>
                     </div>
 
-                    <!-- Règles de gestion -->
-                    <div class="card" style="max-width:800px; margin:1.5rem auto;">
-                        <div class="card-body">
-                            <h3 style="margin-top:0;">📖 Règles de gestion</h3>
-                            <ul style="margin:0.5rem 0; padding-left:1.5rem; line-height:1.8;">
-                                <li><strong>Correspondance par libellé :</strong> Un don est dispatché vers un besoin ayant le même libellé d'objet.</li>
-                                <li><strong>Priorité par quantité :</strong> Les besoins avec la plus petite quantité sont servis en premier (par défaut).</li>
-                                <li><strong>Priorité par date :</strong> Optionnellement, les besoins les plus anciens peuvent être servis en premier.</li>
-                                <li><strong>Mise à jour des états :</strong> Un besoin dont la quantité atteint 0 passe à l'état "satisfait".</li>
-                                <li><strong>Exclusion Argent :</strong> Les dons/besoins de type "Argent" sont traités via la page Achat.</li>
-                            </ul>
-                        </div>
-                    </div>
 
                 </div>
             </div>

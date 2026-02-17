@@ -38,12 +38,17 @@ CREATE TABLE IF NOT EXISTS BNGRC_sinistre(
     id_objet INT NOT NULL,
     id_ville INT NOT NULL,
     quantite INT NOT NULL,
+    quantite_initiale INT NOT NULL,
     date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     id_etat INT NOT NULL DEFAULT 1,
     FOREIGN KEY (id_objet) REFERENCES BNGRC_objet(id),
     FOREIGN KEY (id_ville) REFERENCES BNGRC_ville(id),
     FOREIGN KEY (id_etat) REFERENCES BNGRC_etat(id)
 );
+
+ALTER TABLE BNGRC_sinistre ADD COLUMN quantite_initiale INT NOT NULL DEFAULT 0 AFTER quantite;
+UPDATE BNGRC_sinistre SET quantite_initiale = quantite;
+
 -- Table pour enregistrer les dons
 CREATE TABLE IF NOT EXISTS BNGRC_dons (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -123,8 +128,7 @@ CREATE VIEW BNGRC_vue_dons AS
 SELECT
     d.id,
     v.nom AS ville,
-    b.nom AS besoin,
-    o.libellee AS libellee,
+    b.nom AS besoin,  
     d.quantite AS quantite,
     u.nom AS unite,
     d.date AS date
@@ -133,5 +137,11 @@ JOIN BNGRC_ville v ON d.id_ville = v.id
 JOIN BNGRC_objet o ON d.id_objet = o.id
 JOIN BNGRC_besoins b ON o.id_besoins = b.id
 JOIN BNGRC_unite u ON o.id_unite = u.id;
+ 
 
-
+ je veux avoir un Sélecteur mode dispatch (date / quantité / proportionnel)
+tu comprends deja le par date (on peut choisir le plus ancien ou le plus récent) et par quantité (on peut choisir le plus grand ou le plus petit)
+mais avec le proportionnel voici le calcul que je veux faire :
+si y a 9besoins et que moi je ne veux que 4besoins hors qu'il y a 5 dons alors le calcule se fait 
+4/9 * 5 = 2.22 (arrondi à 2) donc je vais prendre les 2 premiers (on ne prends que la partie entiere) dons pour satisfaire les besoins proportionnellement
+donc la formule est : (nombre de besoins sélectionnés / nombre total de besoins) * nombre total de dons disponibles

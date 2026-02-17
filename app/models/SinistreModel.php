@@ -15,7 +15,7 @@ class SinistreModel
 
     public function get(): array
     {
-        $sql = "SELECT s.id, s.id_objet, o.libellee, o.id_besoins, b.nom AS besoin, s.id_ville, v.nom AS ville, s.quantite, o.id_unite AS id_unite, u.nom AS unite, o.prix_unitaire AS prix_unitaire, s.date AS date, s.id_etat, e.nom AS etat
+        $sql = "SELECT s.id, s.id_objet, o.libellee, o.id_besoins, b.nom AS besoin, s.id_ville, v.nom AS ville, s.quantite, s.quantite_initiale, o.id_unite AS id_unite, u.nom AS unite, o.prix_unitaire AS prix_unitaire, s.date AS date, s.id_etat, e.nom AS etat
             FROM BNGRC_sinistre s
             JOIN BNGRC_objet o ON s.id_objet = o.id
             JOIN BNGRC_besoins b ON o.id_besoins = b.id
@@ -45,13 +45,13 @@ class SinistreModel
     public function insertByObjet(int $id_objet, int $id_ville, int $quantite, ?string $date = null): int
     {
         if ($date !== null) {
-            $sql = "INSERT INTO BNGRC_sinistre (id_objet, id_ville, quantite, date) VALUES (?, ?, ?, ?)";
+            $sql = "INSERT INTO BNGRC_sinistre (id_objet, id_ville, quantite, quantite_initiale, date) VALUES (?, ?, ?, ?, ?)";
             $stmt = $this->db->prepare($sql);
-            $stmt->execute([$id_objet, $id_ville, $quantite, $date]);
+            $stmt->execute([$id_objet, $id_ville, $quantite, $quantite, $date]);
         } else {
-            $sql = "INSERT INTO BNGRC_sinistre (id_objet, id_ville, quantite) VALUES (?, ?, ?)";
+            $sql = "INSERT INTO BNGRC_sinistre (id_objet, id_ville, quantite, quantite_initiale) VALUES (?, ?, ?, ?)";
             $stmt = $this->db->prepare($sql);
-            $stmt->execute([$id_objet, $id_ville, $quantite]);
+            $stmt->execute([$id_objet, $id_ville, $quantite, $quantite]);
         }
 
         return (int)$this->db->lastInsertId();
@@ -100,14 +100,15 @@ class SinistreModel
     }
 
     /**
-     * Retourne le montant total (quantite * prix) pour tous les sinistres disposant d'un prix.
+     * Retourne le montant total (quantite_initiale * prix) pour tous les sinistres disposant d'un prix.
+     * Utilise quantite_initiale pour avoir le montant total original des besoins.
      */
     public function getTotalMontantGlobal(): float
     {
-        $sql = "SELECT SUM(s.quantite * o.prix_unitaire) AS total
+        $sql = "SELECT SUM(s.quantite_initiale * o.prix_unitaire) AS total
             FROM BNGRC_sinistre s
             JOIN BNGRC_objet o ON s.id_objet = o.id
-            WHERE s.quantite > 0 AND o.prix_unitaire IS NOT NULL";
+            WHERE o.prix_unitaire IS NOT NULL";
         $stmt = $this->db->query($sql);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($row === false || $row['total'] === null) {
@@ -118,26 +119,33 @@ class SinistreModel
 
     /**
      * Retourne un tableau des montants regroupes par etat (indexe par id_etat).
+     * Pour les besoins satisfaits (id_etat=2): calcul basé sur (quantite_initiale - quantite) * prix
+     * Pour les besoins insatisfaits (id_etat=1): calcul basé sur quantite restante * prix
      */
     public function getMontantsParEtat(): array
     {
-        $sql = "SELECT s.id_etat, SUM(s.quantite * o.prix_unitaire) AS total
+        // Montant restant (insatisfait) = quantite actuelle * prix
+        $sqlRestant = "SELECT SUM(s.quantite * o.prix_unitaire) AS total
             FROM BNGRC_sinistre s
             JOIN BNGRC_objet o ON s.id_objet = o.id
-            WHERE s.quantite > 0 AND o.prix_unitaire IS NOT NULL
-            GROUP BY s.id_etat";
-        $stmt = $this->db->query($sql);
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            WHERE o.prix_unitaire IS NOT NULL";
+        $stmt = $this->db->query($sqlRestant);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $totalRestant = ($row !== false && $row['total'] !== null) ? (float)$row['total'] : 0.0;
 
-        $totals = [];
-        foreach ($rows as $row) {
-            if ($row['total'] === null) {
-                continue;
-            }
-            $totals[(int)$row['id_etat']] = (float)$row['total'];
-        }
+        // Montant satisfait = (quantite_initiale - quantite) * prix = ce qui a été dispatché
+        $sqlSatisfait = "SELECT SUM((s.quantite_initiale - s.quantite) * o.prix_unitaire) AS total
+            FROM BNGRC_sinistre s
+            JOIN BNGRC_objet o ON s.id_objet = o.id
+            WHERE o.prix_unitaire IS NOT NULL";
+        $stmt = $this->db->query($sqlSatisfait);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $totalSatisfait = ($row !== false && $row['total'] !== null) ? (float)$row['total'] : 0.0;
 
-        return $totals;
+        return [
+            1 => $totalRestant,   // insatisfait = quantité restante
+            2 => $totalSatisfait, // satisfait = quantité dispatchée
+        ];
     }
 
     /**

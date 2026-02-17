@@ -53,7 +53,53 @@
             font-size: 0.85rem;
             color: #6c757d;
         }
+
+        .table-section {
+            margin-top: 2rem;
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e2e6ea;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+            overflow: hidden;
+        }
+
+        .table-section-header {
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-bottom: 1px solid #e2e6ea;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .table-section-body {
+            padding: 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .table-section table {
+            margin-bottom: 0;
+            width: 100%;
+        }
+
+        .badge-satisfait {
+            background-color: #28a745;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        .badge-insatisfait {
+            background-color: #ffc107;
+            color: black;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
     </style>
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/tables.css">
 </head>
 
 <body>
@@ -88,6 +134,116 @@
                         <div class="recap-card" id="card-total-restants">
                             <p class="recap-label">Montant des besoins restants</p>
                             <div class="recap-value" data-field="total-restants">0 Ar</div>
+                        </div>
+                    </div>
+
+                    <!-- Tableau des Besoins -->
+                    <div class="table-section">
+                        <div class="table-section-header">
+                            📋 Liste des Besoins (<?php echo count($besoins ?? []); ?>)
+                        </div>
+                        <div class="table-section-body">
+                            <?php if (!empty($besoins) && is_array($besoins)): ?>
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>📍 Ville</th>
+                                            <th>📋 Type</th>
+                                            <th>📝 Libellé</th>
+                                            <th style="text-align: center;">📊 Quantité</th>
+                                            <th>📏 Unité</th>
+                                            <th style="text-align: right;">💰 Prix Total</th>
+                                            <th>📅 Date</th>
+                                            <th style="text-align: center;">État</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($besoins as $b): ?>
+                                            <tr>
+                                                <td><strong><?php echo htmlspecialchars($b['ville'] ?? 'N/A'); ?></strong></td>
+                                                <td>
+                                                    <span class="badge badge-success">
+                                                        <?php echo htmlspecialchars($b['besoin'] ?? 'N/A'); ?>
+                                                    </span>
+                                                </td>
+                                                <td><?php echo htmlspecialchars($b['libellee'] ?? ''); ?></td>
+                                                <td style="text-align: center;">
+                                                    <strong><?php echo htmlspecialchars((string)($b['quantite_initiale'] ?? '')); ?></strong>
+                                                </td>
+                                                <td><?php echo htmlspecialchars($b['unite'] ?? ''); ?></td>
+                                                <td style="text-align: right; font-weight: 600; color: #2e7d32;">
+                                                    <?php 
+                                                        $prixTotal = (float)($b['quantite_initiale'] ?? 0) * (float)($b['prix_unitaire'] ?? 0);
+                                                        echo $prixTotal > 0 ? number_format($prixTotal, 2, ',', ' ') . ' Ar' : '—';
+                                                    ?>
+                                                </td>
+                                                <td><?php echo htmlspecialchars($b['date'] ?? ''); ?></td>
+                                                <td style="text-align: center;">
+                                                    <span class="<?php echo ($b['etat'] ?? '') === 'satisfait' ? 'badge-satisfait' : 'badge-insatisfait'; ?>">
+                                                        <?php echo htmlspecialchars($b['etat'] ?? 'insatisfait'); ?>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            <?php else: ?>
+                                <div style="padding: 2rem; text-align: center; color: #6c757d;">
+                                    Aucun besoin enregistré
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <!-- Tableau des Dons -->
+                    <div class="table-section">
+                        <div class="table-section-header">
+                            🎁 Liste des Dons (<?php echo count($dons ?? []); ?>)
+                        </div>
+                        <div class="table-section-body">
+                            <?php if (!empty($dons) && is_array($dons)): ?>
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>📍 Ville</th>
+                                            <th>📋 Type</th>
+                                            <th>📝 Libellé</th>
+                                            <th style="text-align: center;">📊 Quantité</th>
+                                            <th>📏 Unité</th>
+                                            <th style="text-align: right;">💰 Prix Total</th>
+                                            <th>📅 Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($dons as $d): ?>
+                                            <tr>
+                                                <td><strong><?php echo htmlspecialchars($d['ville'] ?? 'N/A'); ?></strong></td>
+                                                <td>
+                                                    <span class="badge badge-success">
+                                                        <?php echo htmlspecialchars($d['besoin'] ?? 'N/A'); ?>
+                                                    </span>
+                                                </td>
+                                                <td><?php echo htmlspecialchars($d['libellee'] ?? ''); ?></td>
+                                                <td style="text-align: center;">
+                                                    <strong><?php echo htmlspecialchars((string)($d['quantite'] ?? '')); ?></strong>
+                                                </td>
+                                                <td><?php echo htmlspecialchars($d['unite'] ?? ''); ?></td>
+                                                <td style="text-align: right; font-weight: 600; color: #2e7d32;">
+                                                    <?php 
+                                                        $prixTotal = (float)($d['quantite'] ?? 0) * (float)($d['prix_unitaire'] ?? 0);
+                                                        echo $prixTotal > 0 ? number_format($prixTotal, 2, ',', ' ') . ' Ar' : '—';
+                                                    ?>
+                                                </td>
+                                                <td><?php echo htmlspecialchars($d['date'] ?? ''); ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            <?php else: ?>
+                                <div style="padding: 2rem; text-align: center; color: #6c757d;">
+                                    Aucun don enregistré
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
